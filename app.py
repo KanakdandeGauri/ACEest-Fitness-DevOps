@@ -4,6 +4,7 @@ from datetime import datetime, date
 
 app = Flask(__name__)
 app.secret_key = "aceest-fitness-secret-key"
+APP_VERSION = "3.0.1"
 
 DB_NAME = "aceest_fitness.db"
 
@@ -1030,7 +1031,8 @@ def index():
         weight_chart_data=weight_chart_data,
         bmi_info=bmi_info,
         workout_history=workout_history,
-        metrics=metrics
+        metrics=metrics,
+        app_version=APP_VERSION
     )
 
 
