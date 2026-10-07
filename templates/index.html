@@ -1,14 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>ACEest Fitness & Gym</title>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ACEest Functional Fitness System</title>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -21,46 +28,47 @@
         }
 
         .container {
-            width: 92%;
-            max-width: 1200px;
-            margin: 30px auto;
+            width: 94%;
+            max-width: 1300px;
+            margin: 25px auto;
         }
 
         header {
+            background: #d4af37;
+            color: #000000;
+            padding: 25px;
             text-align: center;
-            margin-bottom: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
         }
 
         header h1 {
-            color: #d4af37;
-            margin-bottom: 8px;
-            font-size: 36px;
+            margin: 0;
+            font-size: 34px;
         }
 
         header p {
-            color: #bbbbbb;
-            margin: 0;
+            margin: 8px 0 0;
+            font-size: 15px;
         }
 
         .card {
             background: #1c1c1c;
             border: 1px solid #333333;
             border-radius: 12px;
-            padding: 25px;
+            padding: 24px;
             margin-bottom: 25px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .card h2 {
             color: #d4af37;
             margin-top: 0;
-            margin-bottom: 20px;
         }
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 18px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
         }
 
         .form-group {
@@ -68,7 +76,7 @@
             flex-direction: column;
         }
 
-        .form-group.full-width {
+        .full {
             grid-column: 1 / -1;
         }
 
@@ -79,18 +87,24 @@
         }
 
         input,
-        select {
-            width: 100%;
+        select,
+        textarea {
             padding: 11px;
-            border: 1px solid #444444;
             border-radius: 6px;
+            border: 1px solid #444444;
             background: #292929;
-            color: #ffffff;
-            font-size: 15px;
+            color: white;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
         }
 
         input:focus,
-        select:focus {
+        select:focus,
+        textarea:focus {
             outline: none;
             border-color: #d4af37;
         }
@@ -111,28 +125,26 @@
         }
 
         #adherenceValue {
-            min-width: 55px;
             color: #d4af37;
             font-weight: bold;
-            font-size: 18px;
+            min-width: 55px;
         }
 
         .button-group {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-top: 22px;
+            margin-top: 20px;
         }
 
         button {
-            padding: 11px 18px;
+            padding: 11px 17px;
             border: none;
             border-radius: 6px;
             background: #d4af37;
             color: #111111;
             font-weight: bold;
             cursor: pointer;
-            font-size: 14px;
         }
 
         button:hover {
@@ -169,20 +181,20 @@
 
         .program-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
         }
 
         .program-card {
             background: #252525;
             border: 1px solid #3d3d3d;
             border-radius: 10px;
-            padding: 20px;
+            padding: 18px;
         }
 
         .program-card h3 {
             color: #d4af37;
-            margin-top: 0;
+            font-size: 17px;
         }
 
         .program-card p {
@@ -190,34 +202,28 @@
             line-height: 1.5;
         }
 
-        .program-card .factor {
-            color: #ffffff;
-            font-weight: bold;
-        }
-
         .summary-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 12px;
         }
 
         .summary-item {
             background: #252525;
+            border: 1px solid #3d3d3d;
             border-radius: 8px;
             padding: 15px;
-            border: 1px solid #3d3d3d;
         }
 
         .summary-item strong {
             display: block;
             color: #999999;
-            font-size: 13px;
+            font-size: 12px;
             margin-bottom: 6px;
         }
 
         .summary-item span {
-            color: #ffffff;
-            font-size: 16px;
+            color: white;
             font-weight: bold;
         }
 
@@ -232,22 +238,18 @@
 
         th,
         td {
-            padding: 12px;
-            text-align: left;
+            padding: 11px;
             border-bottom: 1px solid #333333;
+            text-align: left;
         }
 
         th {
-            background: #252525;
             color: #d4af37;
+            background: #252525;
         }
 
         td {
             color: #dddddd;
-        }
-
-        tr:hover td {
-            background: #222222;
         }
 
         .progress-bar {
@@ -256,7 +258,7 @@
             background: #333333;
             border-radius: 10px;
             overflow: hidden;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         .progress-fill {
@@ -267,13 +269,31 @@
         }
 
         .chart-container {
-            position: relative;
-            width: 100%;
             height: 400px;
+            position: relative;
+        }
+
+        .bmi-box {
+            background: #252525;
+            border: 1px solid #3d3d3d;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .bmi-value {
+            color: #d4af37;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .bmi-category {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 8px;
         }
 
         .empty-message {
-            color: #999999;
+            color: #888888;
             text-align: center;
             padding: 20px;
         }
@@ -282,12 +302,16 @@
             text-align: center;
             color: #777777;
             padding: 20px;
-            margin-top: 30px;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1000px) {
+
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
             .program-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
             }
 
             .summary-grid {
@@ -295,21 +319,18 @@
             }
         }
 
-        @media (max-width: 700px) {
+        @media (max-width: 650px) {
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
 
-            .form-group.full-width {
-                grid-column: auto;
+            .program-grid {
+                grid-template-columns: 1fr;
             }
 
             .summary-grid {
                 grid-template-columns: 1fr;
-            }
-
-            header h1 {
-                font-size: 28px;
             }
 
             .button-group {
@@ -320,20 +341,32 @@
                 width: 100%;
             }
         }
+
     </style>
+
 </head>
+
 
 <body>
 
 <div class="container">
 
+
     <header>
-        <h1>ACEest Fitness & Gym</h1>
-        <p>Client Management, Training Programs & Weekly Progress Tracking</p>
+
+        <h1>
+            ACEest Functional Fitness System
+        </h1>
+
+        <p>
+            Client Management, Goals, Workouts,
+            Body Metrics & Analytics
+        </p>
+
     </header>
 
 
-    <!-- Flash Messages -->
+    <!-- FLASH MESSAGES -->
 
     {% with messages = get_flashed_messages(with_categories=true) %}
 
@@ -352,15 +385,18 @@
     {% endwith %}
 
 
-    <!-- Client Management -->
+    <!-- CLIENT MANAGEMENT -->
 
     <div class="card">
 
-        <h2>Client Management</h2>
+        <h2>
+            Client Management
+        </h2>
 
         <form method="POST">
 
             <div class="form-grid">
+
 
                 <div class="form-group">
 
@@ -390,8 +426,25 @@
                         id="age"
                         name="age"
                         value="{{ form_data.age }}"
-                        placeholder="Enter age"
                         min="1"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="height">
+                        Height (cm)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="height"
+                        name="height"
+                        value="{{ form_data.height }}"
+                        min="1"
+                        step="0.1"
                     >
 
                 </div>
@@ -408,7 +461,6 @@
                         id="weight"
                         name="weight"
                         value="{{ form_data.weight }}"
-                        placeholder="Enter weight"
                         min="1"
                         step="0.1"
                     >
@@ -419,10 +471,13 @@
                 <div class="form-group">
 
                     <label for="program">
-                        Fitness Program
+                        Program
                     </label>
 
-                    <select id="program" name="program">
+                    <select
+                        id="program"
+                        name="program"
+                    >
 
                         <option value="">
                             Select a program
@@ -446,7 +501,43 @@
                 </div>
 
 
-                <div class="form-group full-width">
+                <div class="form-group">
+
+                    <label for="target_weight">
+                        Target Weight (kg)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="target_weight"
+                        name="target_weight"
+                        value="{{ form_data.target_weight }}"
+                        min="1"
+                        step="0.1"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="target_adherence">
+                        Target Adherence (%)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="target_adherence"
+                        name="target_adherence"
+                        value="{{ form_data.target_adherence }}"
+                        min="0"
+                        max="100"
+                    >
+
+                </div>
+
+
+                <div class="form-group full">
 
                     <label for="adherence">
                         Weekly Adherence
@@ -485,7 +576,6 @@
                     Save Client
                 </button>
 
-
                 <button
                     type="submit"
                     name="action"
@@ -495,33 +585,53 @@
                     Load Client
                 </button>
 
-
                 <button
                     type="submit"
                     name="action"
                     value="progress"
                 >
-                    Save Progress
+                    Save Weekly Progress
                 </button>
-
 
                 <button
                     type="submit"
                     name="action"
                     value="chart"
                 >
-                    View Progress Chart
+                    Adherence Chart
                 </button>
 
+                <button
+                    type="submit"
+                    name="action"
+                    value="weight_chart"
+                >
+                    Weight Trend
+                </button>
+
+                <button
+                    type="submit"
+                    name="action"
+                    value="bmi"
+                >
+                    BMI & Risk
+                </button>
+
+                <button
+                    type="submit"
+                    name="action"
+                    value="history"
+                >
+                    Workout History
+                </button>
 
                 <button
                     type="submit"
                     name="action"
                     value="view"
                 >
-                    View Program
+                    View Summary
                 </button>
-
 
                 <button
                     type="submit"
@@ -539,11 +649,13 @@
     </div>
 
 
-    <!-- Available Programs -->
+    <!-- AVAILABLE PROGRAMS -->
 
     <div class="card">
 
-        <h2>Available Programs</h2>
+        <h2>
+            Available Programs
+        </h2>
 
         <div class="program-grid">
 
@@ -559,8 +671,12 @@
                         {{ program.description }}
                     </p>
 
-                    <p class="factor">
-                        Calorie Factor: {{ program.factor }}
+                    <p>
+                        <strong>
+                            Calorie Factor:
+                        </strong>
+
+                        {{ program.factor }}
                     </p>
 
                 </div>
@@ -572,13 +688,15 @@
     </div>
 
 
-    <!-- Client Summary -->
+    <!-- CLIENT SUMMARY -->
 
     {% if summary %}
 
         <div class="card">
 
-            <h2>Client Summary</h2>
+            <h2>
+                Client Summary
+            </h2>
 
             <div class="summary-grid">
 
@@ -589,7 +707,6 @@
                     </span>
                 </div>
 
-
                 <div class="summary-item">
                     <strong>Age</strong>
                     <span>
@@ -597,6 +714,12 @@
                     </span>
                 </div>
 
+                <div class="summary-item">
+                    <strong>Height</strong>
+                    <span>
+                        {{ summary.height }} cm
+                    </span>
+                </div>
 
                 <div class="summary-item">
                     <strong>Weight</strong>
@@ -605,7 +728,6 @@
                     </span>
                 </div>
 
-
                 <div class="summary-item">
                     <strong>Program</strong>
                     <span>
@@ -613,17 +735,28 @@
                     </span>
                 </div>
 
-
                 <div class="summary-item">
-                    <strong>Estimated Calories</strong>
+                    <strong>Calories</strong>
                     <span>
-
                         {% if summary.calories %}
-                            {{ summary.calories }} kcal
+                            {{ summary.calories }} kcal/day
                         {% else %}
                             N/A
                         {% endif %}
+                    </span>
+                </div>
 
+                <div class="summary-item">
+                    <strong>Target Weight</strong>
+                    <span>
+                        {{ summary.target_weight or "N/A" }}
+                    </span>
+                </div>
+
+                <div class="summary-item">
+                    <strong>Target Adherence</strong>
+                    <span>
+                        {{ summary.target_adherence or "N/A" }}
                     </span>
                 </div>
 
@@ -634,13 +767,15 @@
     {% endif %}
 
 
-    <!-- Selected Client -->
+    <!-- SELECTED CLIENT -->
 
     {% if selected_client %}
 
         <div class="card">
 
-            <h2>Selected Client</h2>
+            <h2>
+                Selected Client
+            </h2>
 
             <div class="summary-grid">
 
@@ -651,22 +786,26 @@
                     </span>
                 </div>
 
-
                 <div class="summary-item">
                     <strong>Age</strong>
                     <span>
-                        {{ selected_client["age"] }}
+                        {{ selected_client["age"] or "N/A" }}
                     </span>
                 </div>
 
+                <div class="summary-item">
+                    <strong>Height</strong>
+                    <span>
+                        {{ selected_client["height"] or "N/A" }} cm
+                    </span>
+                </div>
 
                 <div class="summary-item">
                     <strong>Weight</strong>
                     <span>
-                        {{ selected_client["weight"] }} kg
+                        {{ selected_client["weight"] or "N/A" }} kg
                     </span>
                 </div>
-
 
                 <div class="summary-item">
                     <strong>Program</strong>
@@ -675,11 +814,24 @@
                     </span>
                 </div>
 
-
                 <div class="summary-item">
                     <strong>Calories</strong>
                     <span>
-                        {{ selected_client["calories"] }} kcal
+                        {{ selected_client["calories"] or "N/A" }}
+                    </span>
+                </div>
+
+                <div class="summary-item">
+                    <strong>Target Weight</strong>
+                    <span>
+                        {{ selected_client["target_weight"] or "N/A" }}
+                    </span>
+                </div>
+
+                <div class="summary-item">
+                    <strong>Target Adherence</strong>
+                    <span>
+                        {{ selected_client["target_adherence"] or "N/A" }}%
                     </span>
                 </div>
 
@@ -690,7 +842,43 @@
     {% endif %}
 
 
-    <!-- Weekly Adherence Chart -->
+    <!-- BMI -->
+
+    {% if bmi_info %}
+
+        <div class="card">
+
+            <h2>
+                BMI & Risk Information
+            </h2>
+
+            <div class="bmi-box">
+
+                <div>
+                    BMI for {{ bmi_info.name }}
+                </div>
+
+                <div class="bmi-value">
+                    {{ bmi_info.value }}
+                </div>
+
+                <div class="bmi-category">
+                    {{ bmi_info.category }}
+                </div>
+
+                <p>
+                    <strong>Risk note:</strong>
+                    {{ bmi_info.risk }}
+                </p>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- ADHERENCE CHART -->
 
     {% if chart_data.weeks %}
 
@@ -711,7 +899,455 @@
     {% endif %}
 
 
-    <!-- Saved Clients -->
+    <!-- WEIGHT CHART -->
+
+    {% if weight_chart_data.dates %}
+
+        <div class="card">
+
+            <h2>
+                Weight Trend
+            </h2>
+
+            <div class="chart-container">
+
+                <canvas id="weightChart"></canvas>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- WORKOUT HISTORY -->
+
+    {% if workout_history %}
+
+        <div class="card">
+
+            <h2>
+                Workout History
+            </h2>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Duration</th>
+                            <th>Notes</th>
+                            <th>Exercise</th>
+                            <th>Sets</th>
+                            <th>Reps</th>
+                            <th>Weight</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for workout in workout_history %}
+
+                            <tr>
+
+                                <td>
+                                    {{ workout["date"] }}
+                                </td>
+
+                                <td>
+                                    {{ workout["workout_type"] }}
+                                </td>
+
+                                <td>
+                                    {{ workout["duration_min"] }} min
+                                </td>
+
+                                <td>
+                                    {{ workout["notes"] or "-" }}
+                                </td>
+
+                                <td>
+                                    {{ workout["exercise_name"] or "-" }}
+                                </td>
+
+                                <td>
+                                    {{ workout["sets"] or "-" }}
+                                </td>
+
+                                <td>
+                                    {{ workout["reps"] or "-" }}
+                                </td>
+
+                                <td>
+                                    {{ workout["exercise_weight"] or "-" }}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- LOG WORKOUT -->
+
+    <div class="card">
+
+        <h2>
+            Log Workout
+        </h2>
+
+        <form method="POST" action="/workout">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>
+                        Client Name
+                    </label>
+
+                    <input
+                        type="text"
+                        name="client_name"
+                        value="{{ form_data.name }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Date
+                    </label>
+
+                    <input
+                        type="date"
+                        name="date"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Workout Type
+                    </label>
+
+                    <select
+                        name="workout_type"
+                        required
+                    >
+
+                        <option value="">
+                            Select workout type
+                        </option>
+
+                        {% for workout_type in workout_types %}
+
+                            <option value="{{ workout_type }}">
+                                {{ workout_type }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Duration (min)
+                    </label>
+
+                    <input
+                        type="number"
+                        name="duration"
+                        value="60"
+                        min="1"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Exercise Name
+                    </label>
+
+                    <input
+                        type="text"
+                        name="exercise_name"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Sets
+                    </label>
+
+                    <input
+                        type="number"
+                        name="sets"
+                        value="3"
+                        min="1"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Reps
+                    </label>
+
+                    <input
+                        type="number"
+                        name="reps"
+                        value="10"
+                        min="1"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Exercise Weight (kg)
+                    </label>
+
+                    <input
+                        type="number"
+                        name="exercise_weight"
+                        value="0"
+                        min="0"
+                        step="0.1"
+                    >
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label>
+                        Notes
+                    </label>
+
+                    <textarea
+                        name="notes"
+                        placeholder="Workout notes..."
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+
+            <div class="button-group">
+
+                <button type="submit">
+                    Save Workout
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- LOG BODY METRICS -->
+
+    <div class="card">
+
+        <h2>
+            Log Body Metrics
+        </h2>
+
+        <form method="POST" action="/metrics">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>
+                        Client Name
+                    </label>
+
+                    <input
+                        type="text"
+                        name="client_name"
+                        value="{{ form_data.name }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Date
+                    </label>
+
+                    <input
+                        type="date"
+                        name="date"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Weight (kg)
+                    </label>
+
+                    <input
+                        type="number"
+                        name="weight"
+                        step="0.1"
+                        min="0"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Waist (cm)
+                    </label>
+
+                    <input
+                        type="number"
+                        name="waist"
+                        step="0.1"
+                        min="0"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Body Fat (%)
+                    </label>
+
+                    <input
+                        type="number"
+                        name="bodyfat"
+                        step="0.1"
+                        min="0"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="button-group">
+
+                <button type="submit">
+                    Save Metrics
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- METRICS HISTORY -->
+
+    {% if metrics %}
+
+        <div class="card">
+
+            <h2>
+                Body Metrics History
+            </h2>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Date</th>
+                            <th>Weight</th>
+                            <th>Waist</th>
+                            <th>Body Fat</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for metric in metrics %}
+
+                            <tr>
+
+                                <td>
+                                    {{ metric["date"] }}
+                                </td>
+
+                                <td>
+                                    {{ metric["weight"] or "-" }} kg
+                                </td>
+
+                                <td>
+                                    {{ metric["waist"] or "-" }} cm
+                                </td>
+
+                                <td>
+                                    {{ metric["bodyfat"] or "-" }}%
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- SAVED CLIENTS -->
 
     <div class="card">
 
@@ -730,13 +1366,13 @@
                         <tr>
                             <th>Name</th>
                             <th>Age</th>
+                            <th>Height</th>
                             <th>Weight</th>
                             <th>Program</th>
                             <th>Calories</th>
                         </tr>
 
                     </thead>
-
 
                     <tbody>
 
@@ -749,11 +1385,15 @@
                                 </td>
 
                                 <td>
-                                    {{ client["age"] }}
+                                    {{ client["age"] or "-" }}
                                 </td>
 
                                 <td>
-                                    {{ client["weight"] }} kg
+                                    {{ client["height"] or "-" }} cm
+                                </td>
+
+                                <td>
+                                    {{ client["weight"] or "-" }} kg
                                 </td>
 
                                 <td>
@@ -761,7 +1401,7 @@
                                 </td>
 
                                 <td>
-                                    {{ client["calories"] }} kcal
+                                    {{ client["calories"] or "-" }}
                                 </td>
 
                             </tr>
@@ -785,7 +1425,7 @@
     </div>
 
 
-    <!-- Weekly Progress -->
+    <!-- WEEKLY PROGRESS -->
 
     <div class="card">
 
@@ -808,7 +1448,6 @@
                         </tr>
 
                     </thead>
-
 
                     <tbody>
 
@@ -868,29 +1507,40 @@
 
 
 <!--
-    Flask sends the chart data here as JSON.
-    This keeps Jinja out of normal JavaScript code.
+    Chart data is kept outside normal JavaScript.
+    This avoids VS Code Jinja/JavaScript warnings.
 -->
 
-<script type="application/json" id="chart-data">
+<script
+    type="application/json"
+    id="chart-data"
+>
 {{ chart_data | tojson }}
+</script>
+
+
+<script
+    type="application/json"
+    id="weight-chart-data"
+>
+{{ weight_chart_data | tojson }}
 </script>
 
 
 <script>
 
-    /* -----------------------------------------
+    /* ---------------------------------------
        Adherence slider
-    ----------------------------------------- */
+    --------------------------------------- */
 
     function updateAdherence(value) {
 
-        const adherenceValue =
+        const element =
             document.getElementById("adherenceValue");
 
-        if (adherenceValue) {
+        if (element) {
 
-            adherenceValue.textContent =
+            element.textContent =
                 value + "%";
 
         }
@@ -898,9 +1548,9 @@
     }
 
 
-    /* -----------------------------------------
-       Weekly progress bars
-    ----------------------------------------- */
+    /* ---------------------------------------
+       Progress bars
+    --------------------------------------- */
 
     document
         .querySelectorAll(".progress-fill")
@@ -919,9 +1569,9 @@
         });
 
 
-    /* -----------------------------------------
-       Weekly adherence chart
-    ----------------------------------------- */
+    /* ---------------------------------------
+       Adherence Chart
+    --------------------------------------- */
 
     const chartElement =
         document.getElementById("chart-data");
@@ -976,7 +1626,6 @@
 
                     },
 
-
                     options: {
 
                         responsive:
@@ -984,7 +1633,6 @@
 
                         maintainAspectRatio:
                             false,
-
 
                         scales: {
 
@@ -1008,7 +1656,6 @@
 
                             },
 
-
                             x: {
 
                                 title: {
@@ -1025,7 +1672,6 @@
 
                         },
 
-
                         plugins: {
 
                             legend: {
@@ -1034,7 +1680,6 @@
                                     true
 
                             },
-
 
                             title: {
 
@@ -1058,7 +1703,143 @@
 
     }
 
+
+    /* ---------------------------------------
+       Weight Trend Chart
+    --------------------------------------- */
+
+    const weightChartElement =
+        document.getElementById(
+            "weight-chart-data"
+        );
+
+
+    if (weightChartElement) {
+
+        const weightData =
+            JSON.parse(
+                weightChartElement.textContent
+            );
+
+
+        if (
+            weightData.dates &&
+            weightData.dates.length > 0
+        ) {
+
+            const canvas =
+                document.getElementById(
+                    "weightChart"
+                );
+
+
+            if (canvas) {
+
+                new Chart(canvas, {
+
+                    type: "line",
+
+                    data: {
+
+                        labels:
+                            weightData.dates,
+
+                        datasets: [
+
+                            {
+                                label:
+                                    "Weight (kg)",
+
+                                data:
+                                    weightData.weights,
+
+                                borderWidth:
+                                    3,
+
+                                pointRadius:
+                                    5,
+
+                                tension:
+                                    0.2
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive:
+                            true,
+
+                        maintainAspectRatio:
+                            false,
+
+                        scales: {
+
+                            y: {
+
+                                title: {
+
+                                    display:
+                                        true,
+
+                                    text:
+                                        "Weight (kg)"
+
+                                }
+
+                            },
+
+                            x: {
+
+                                title: {
+
+                                    display:
+                                        true,
+
+                                    text:
+                                        "Date"
+
+                                }
+
+                            }
+
+                        },
+
+                        plugins: {
+
+                            legend: {
+
+                                display:
+                                    true
+
+                            },
+
+                            title: {
+
+                                display:
+                                    true,
+
+                                text:
+                                    "Weight Trend"
+
+                            }
+
+                        }
+
+                    }
+
+                });
+
+            }
+
+        }
+
+    }
+
 </script>
 
 </body>
+
 </html>
