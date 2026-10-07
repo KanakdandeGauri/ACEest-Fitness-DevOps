@@ -4,7 +4,11 @@
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>ACEest Fitness & Performance</title>
 
@@ -21,9 +25,7 @@
             color: white;
         }
 
-        /* -------------------------------------------------
-           HEADER
-        ------------------------------------------------- */
+        /* HEADER */
 
         header {
             background: #d4af37;
@@ -37,9 +39,7 @@
             font-size: 28px;
         }
 
-        /* -------------------------------------------------
-           MAIN LAYOUT
-        ------------------------------------------------- */
+        /* LAYOUT */
 
         .container {
             display: flex;
@@ -62,9 +62,7 @@
             min-width: 0;
         }
 
-        /* -------------------------------------------------
-           HEADINGS
-        ------------------------------------------------- */
+        /* HEADINGS */
 
         h2 {
             color: #d4af37;
@@ -77,9 +75,7 @@
             margin-top: 0;
         }
 
-        /* -------------------------------------------------
-           FORM
-        ------------------------------------------------- */
+        /* FORM */
 
         .form-group {
             margin-bottom: 15px;
@@ -88,7 +84,6 @@
         label {
             display: block;
             margin-bottom: 6px;
-            color: white;
         }
 
         input,
@@ -103,7 +98,7 @@
         }
 
         textarea {
-            min-height: 75px;
+            min-height: 70px;
             resize: vertical;
         }
 
@@ -139,9 +134,7 @@
             color: white;
         }
 
-        /* -------------------------------------------------
-           MESSAGES
-        ------------------------------------------------- */
+        /* MESSAGES */
 
         .message {
             padding: 12px;
@@ -159,9 +152,7 @@
             color: #ffb3b3;
         }
 
-        /* -------------------------------------------------
-           PROGRAM DETAILS
-        ------------------------------------------------- */
+        /* CONTENT */
 
         .content-box {
             background: #111;
@@ -194,9 +185,7 @@
             margin: 15px 0;
         }
 
-        /* -------------------------------------------------
-           GYM INFORMATION
-        ------------------------------------------------- */
+        /* GYM INFO */
 
         .gym-info {
             background: #222;
@@ -210,9 +199,7 @@
             margin: 8px 0;
         }
 
-        /* -------------------------------------------------
-           CLIENT TABLE
-        ------------------------------------------------- */
+        /* CLIENT TABLE */
 
         .table-container {
             overflow-x: auto;
@@ -240,20 +227,28 @@
             background: #222;
         }
 
-        /* -------------------------------------------------
-           PROGRESS CHART
-        ------------------------------------------------- */
+        /* SUMMARY */
 
-        .chart-container {
-            margin-top: 25px;
+        .summary {
             background: #111;
             border: 1px solid #555;
-            border-radius: 8px;
             padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
         }
 
-        .progress-item {
-            margin-bottom: 18px;
+        .summary-line {
+            margin: 8px 0;
+        }
+
+        /* PROGRESS */
+
+        .progress-record {
+            background: #222;
+            border: 1px solid #444;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 5px;
         }
 
         .progress-header {
@@ -264,19 +259,15 @@
 
         .progress-track {
             width: 100%;
-            height: 25px;
+            height: 24px;
             background: #333;
             border-radius: 4px;
             overflow: hidden;
         }
 
-        /*
-           The exact width is represented using CSS classes.
-           No Jinja expression is placed inside a CSS property.
-        */
-
         .progress-fill {
             height: 100%;
+            background: #d4af37;
             border-radius: 4px;
         }
 
@@ -324,18 +315,12 @@
             width: 100%;
         }
 
-        .progress-fill {
-            background: #d4af37;
-        }
-
         .empty-state {
             color: #aaa;
             padding: 15px 0;
         }
 
-        /* -------------------------------------------------
-           MOBILE
-        ------------------------------------------------- */
+        /* MOBILE */
 
         @media (max-width: 900px) {
 
@@ -364,15 +349,11 @@
 <header>
 
     <h1>
-        ACEest FUNCTIONAL FITNESS SYSTEM v2
+        ACEest Functional Fitness System
     </h1>
 
 </header>
 
-
-<!-- =====================================================
-     MAIN CONTAINER
-===================================================== -->
 
 <div class="container">
 
@@ -384,11 +365,9 @@
     <div class="left-panel">
 
         <h2>
-            Client Profile
+            Client Management
         </h2>
 
-
-        <!-- SUCCESS MESSAGE -->
 
         {% if message %}
 
@@ -399,8 +378,6 @@
         {% endif %}
 
 
-        <!-- ERROR MESSAGE -->
-
         {% if error %}
 
             <div class="error">
@@ -409,8 +386,6 @@
 
         {% endif %}
 
-
-        <!-- CLIENT FORM -->
 
         <form method="POST">
 
@@ -528,7 +503,6 @@
                 <label for="adherence">
 
                     Weekly Adherence:
-
                     <span id="adherence-value">
                         {{ adherence }}%
                     </span>
@@ -549,7 +523,7 @@
             </div>
 
 
-            <!-- COACH NOTES -->
+            <!-- NOTES -->
 
             <div class="form-group">
 
@@ -573,18 +547,36 @@
                 <button
                     type="submit"
                     name="action"
-                    value="view"
+                    value="save"
                 >
-                    View Program
+                    Save Client
                 </button>
 
 
                 <button
                     type="submit"
                     name="action"
-                    value="save"
+                    value="load"
                 >
-                    Save Client
+                    Load Client
+                </button>
+
+
+                <button
+                    type="submit"
+                    name="action"
+                    value="progress"
+                >
+                    Save Progress
+                </button>
+
+
+                <button
+                    type="submit"
+                    name="action"
+                    value="view"
+                >
+                    View Program
                 </button>
 
 
@@ -647,7 +639,7 @@
     <div class="right-panel">
 
 
-        <!-- WEEKLY TRAINING -->
+        <!-- PROGRAM DETAILS -->
 
         <div class="content-box">
 
@@ -667,7 +659,10 @@
             {% else %}
 
                 <div class="empty-state">
-                    Select a program to view the weekly training plan.
+
+                    Select a program to view the
+                    weekly training plan.
+
                 </div>
 
             {% endif %}
@@ -693,7 +688,10 @@
             {% else %}
 
                 <div class="empty-state">
-                    Select a program to view the nutrition plan.
+
+                    Select a program to view
+                    the nutrition plan.
+
                 </div>
 
             {% endif %}
@@ -708,7 +706,7 @@
             {% if calories is not none %}
 
                 Estimated Calories:
-                {{ calories }} kcal
+                {{ calories }} kcal/day
 
             {% else %}
 
@@ -720,13 +718,60 @@
 
 
         <!-- =================================================
-             CLIENT LIST
+             CLIENT SUMMARY
+        ================================================== -->
+
+        {% if summary %}
+
+            <div class="summary">
+
+                <h3>
+                    Client Summary
+                </h3>
+
+                <div class="summary-line">
+                    <strong>Name:</strong>
+                    {{ summary.name }}
+                </div>
+
+                <div class="summary-line">
+                    <strong>Age:</strong>
+                    {{ summary.age }}
+                </div>
+
+                <div class="summary-line">
+                    <strong>Weight:</strong>
+                    {{ summary.weight }} kg
+                </div>
+
+                <div class="summary-line">
+                    <strong>Program:</strong>
+                    {{ summary.program }}
+                </div>
+
+                <div class="summary-line">
+                    <strong>Calories:</strong>
+                    {{ summary.calories }} kcal/day
+                </div>
+
+                <div class="summary-line">
+                    <strong>Coach Notes:</strong>
+                    {{ summary.notes or "None" }}
+                </div>
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- =================================================
+             CLIENT DATABASE
         ================================================== -->
 
         <div class="content-box">
 
             <h3>
-                Client List
+                Saved Clients
             </h3>
 
 
@@ -744,7 +789,7 @@
                                 <th>Age</th>
                                 <th>Weight</th>
                                 <th>Program</th>
-                                <th>Adherence</th>
+                                <th>Calories</th>
                                 <th>Notes</th>
 
                             </tr>
@@ -775,11 +820,11 @@
                                     </td>
 
                                     <td>
-                                        {{ client.adherence }}%
+                                        {{ client.calories }}
                                     </td>
 
                                     <td>
-                                        {{ client.notes }}
+                                        {{ client.notes or "" }}
                                     </td>
 
                                 </tr>
@@ -804,30 +849,32 @@
 
 
         <!-- =================================================
-             PROGRESS CHART
+             WEEKLY PROGRESS
         ================================================== -->
 
-        <div class="chart-container">
+        <div class="content-box">
 
             <h3>
-                Progress Chart
+                Weekly Progress
             </h3>
 
 
-            {% if clients %}
+            {% if progress_records %}
 
-                {% for client in clients %}
+                {% for record in progress_records %}
 
-                    <div class="progress-item">
+                    <div class="progress-record">
 
                         <div class="progress-header">
 
                             <span>
-                                {{ client.name }}
+                                <strong>
+                                    {{ record.client_name }}
+                                </strong>
                             </span>
 
                             <span>
-                                {{ client.adherence }}%
+                                {{ record.adherence }}%
                             </span>
 
                         </div>
@@ -835,55 +882,84 @@
 
                         <div class="progress-track">
 
-                            {% set adherence_value = client.adherence|int %}
+                            {% set progress_value =
+                                record.adherence|int %}
 
-                            {% if adherence_value >= 95 %}
 
-                                <div class="progress-fill progress-100"></div>
+                            {% if progress_value >= 95 %}
 
-                            {% elif adherence_value >= 85 %}
+                                <div
+                                    class="progress-fill progress-100"
+                                ></div>
 
-                                <div class="progress-fill progress-90"></div>
+                            {% elif progress_value >= 85 %}
 
-                            {% elif adherence_value >= 75 %}
+                                <div
+                                    class="progress-fill progress-90"
+                                ></div>
 
-                                <div class="progress-fill progress-80"></div>
+                            {% elif progress_value >= 75 %}
 
-                            {% elif adherence_value >= 65 %}
+                                <div
+                                    class="progress-fill progress-80"
+                                ></div>
 
-                                <div class="progress-fill progress-70"></div>
+                            {% elif progress_value >= 65 %}
 
-                            {% elif adherence_value >= 55 %}
+                                <div
+                                    class="progress-fill progress-70"
+                                ></div>
 
-                                <div class="progress-fill progress-60"></div>
+                            {% elif progress_value >= 55 %}
 
-                            {% elif adherence_value >= 45 %}
+                                <div
+                                    class="progress-fill progress-60"
+                                ></div>
 
-                                <div class="progress-fill progress-50"></div>
+                            {% elif progress_value >= 45 %}
 
-                            {% elif adherence_value >= 35 %}
+                                <div
+                                    class="progress-fill progress-50"
+                                ></div>
 
-                                <div class="progress-fill progress-40"></div>
+                            {% elif progress_value >= 35 %}
 
-                            {% elif adherence_value >= 25 %}
+                                <div
+                                    class="progress-fill progress-40"
+                                ></div>
 
-                                <div class="progress-fill progress-30"></div>
+                            {% elif progress_value >= 25 %}
 
-                            {% elif adherence_value >= 15 %}
+                                <div
+                                    class="progress-fill progress-30"
+                                ></div>
 
-                                <div class="progress-fill progress-20"></div>
+                            {% elif progress_value >= 15 %}
 
-                            {% elif adherence_value > 0 %}
+                                <div
+                                    class="progress-fill progress-20"
+                                ></div>
 
-                                <div class="progress-fill progress-10"></div>
+                            {% elif progress_value > 0 %}
+
+                                <div
+                                    class="progress-fill progress-10"
+                                ></div>
 
                             {% else %}
 
-                                <div class="progress-fill progress-0"></div>
+                                <div
+                                    class="progress-fill progress-0"
+                                ></div>
 
                             {% endif %}
 
                         </div>
+
+
+                        <small>
+                            {{ record.week }}
+                        </small>
 
                     </div>
 
@@ -892,22 +968,19 @@
             {% else %}
 
                 <div class="empty-state">
-                    Save clients to display the progress chart.
+
+                    No weekly progress records yet.
+
                 </div>
 
             {% endif %}
 
         </div>
 
-
     </div>
 
 </div>
 
-
-<!-- =====================================================
-     JAVASCRIPT
-===================================================== -->
 
 <script>
 

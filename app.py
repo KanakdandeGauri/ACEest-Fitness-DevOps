@@ -1,8 +1,12 @@
 from flask import Flask, render_template, request, Response
+import sqlite3
 import csv
 import io
+from datetime import datetime
 
 app = Flask(__name__)
+
+DB_NAME = "aceest_fitness.db"
 
 
 # ---------------------------------------------------------
@@ -34,6 +38,48 @@ PROGRAMS = {
 
 
 # ---------------------------------------------------------
+# DATABASE
+# ---------------------------------------------------------
+
+def get_db_connection():
+    connection = sqlite3.connect(DB_NAME)
+    connection.row_factory = sqlite3.Row
+    return connection
+
+
+def init_db():
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS clients (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE,
+            age INTEGER,
+            weight REAL,
+            program TEXT,
+            calories INTEGER,
+            notes TEXT
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS progress (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            client_name TEXT,
+            week TEXT,
+            adherence INTEGER
+        )
+    """)
+
+    connection.commit()
+    connection.close()
+
+
+init_db()
+
+
+# ---------------------------------------------------------
 # GYM INFORMATION
 # ---------------------------------------------------------
 
@@ -42,13 +88,6 @@ GYM_INFO = {
     "area": "10,000 sq ft",
     "break_even": 250
 }
-
-
-# ---------------------------------------------------------
-# CLIENT STORAGE
-# ---------------------------------------------------------
-
-clients = []
 
 
 # ---------------------------------------------------------
@@ -69,10 +108,20 @@ def index():
     calories = None
     message = ""
     error = ""
+    summary = None
 
     if request.method == "POST":
 
         action = request.form.get("action", "")
+
+        name = request.form.get("name", "").strip()
+        age = request.form.get("age", "").strip()
+        weight = request.form.get("weight", "").strip()
+        selected_program = request.form.get("program", "")
+        adherence = request.form.get("adherence", "0")
+        notes = request.form.get("notes", "").strip()
+
+        selected_data = PROGRAMS.get(selected_program)
 
         # -------------------------------------------------
         # RESET
@@ -92,25 +141,14 @@ def index():
                 calories=None,
                 message="",
                 error="",
-                clients=clients,
+                summary=None,
+                clients=get_all_clients(),
+                progress_records=get_all_progress(),
                 gym_info=GYM_INFO
             )
 
         # -------------------------------------------------
-        # READ FORM DATA
-        # -------------------------------------------------
-
-        name = request.form.get("name", "").strip()
-        age = request.form.get("age", "").strip()
-        weight = request.form.get("weight", "").strip()
-        selected_program = request.form.get("program", "")
-        adherence = request.form.get("adherence", "0")
-        notes = request.form.get("notes", "").strip()
-
-        selected_data = PROGRAMS.get(selected_program)
-
-        # -------------------------------------------------
-        # CALCULATE ESTIMATED CALORIES
+        # CALCULATE CALORIES
         # -------------------------------------------------
 
         if selected_data and weight:
@@ -138,24 +176,126 @@ def index():
 
             if not name or not selected_program:
 
-                error = "Please fill client name and program."
+                error = "Name and Program required"
 
             elif not error:
 
-                client = {
-                    "name": name,
-                    "age": age,
-                    "weight": weight,
-                    "program": selected_program,
-                    "adherence": adherence,
-                    "notes": notes
-                }
+                try:
 
-                clients.append(client)
+                    age_value = int(age) if age else 0
+                    weight_value = float(weight) if weight else 0
 
-                message = (
-                    f"Client {name} saved successfully."
-                )
+                    connection = get_db_connection()
+
+                    connection.execute("""
+                        INSERT INTO clients
+                        (name, age, weight, program, calories, notes)
+                        VALUES (?, ?, ?, ?, ?, ?)
+
+                        ON CONFLICT(name)
+                        DO UPDATE SET
+                            age = excluded.age,
+                            weight = excluded.weight,
+                            program = excluded.program,
+                            calories = excluded.calories,
+                            notes = excluded.notes
+                    """, (
+                        name,
+                        age_value,
+                        weight_value,
+                        selected_program,
+                        calories,
+                        notes
+                    ))
+
+                    connection.commit()
+                    connection.close()
+
+                    message = "Client data saved successfully"
+
+                except Exception as exc:
+
+                    error = f"DB Error: {exc}"
+
+        # -------------------------------------------------
+        # LOAD CLIENT
+        # -------------------------------------------------
+
+        elif action == "load":
+
+            if not name:
+
+                error = "Please enter a client name."
+
+            else:
+
+                client = get_client(name)
+
+                if client is None:
+
+                    error = "Client not found"
+
+                else:
+
+                    name = client["name"]
+                    age = client["age"]
+                    weight = client["weight"]
+                    selected_program = client["program"]
+                    calories = client["calories"]
+                    notes = client["notes"] or ""
+
+                    selected_data = PROGRAMS.get(
+                        selected_program
+                    )
+
+                    summary = client
+
+        # -------------------------------------------------
+        # SAVE PROGRESS
+        # -------------------------------------------------
+
+        elif action == "progress":
+
+            if not name:
+
+                error = "Please enter a client name."
+
+            else:
+
+                client = get_client(name)
+
+                if client is None:
+
+                    error = "Client not found. Save the client first."
+
+                else:
+
+                    week = datetime.now().strftime(
+                        "Week %U - %Y"
+                    )
+
+                    try:
+
+                        connection = get_db_connection()
+
+                        connection.execute("""
+                            INSERT INTO progress
+                            (client_name, week, adherence)
+                            VALUES (?, ?, ?)
+                        """, (
+                            name,
+                            week,
+                            int(adherence)
+                        ))
+
+                        connection.commit()
+                        connection.close()
+
+                        message = "Weekly progress logged"
+
+                    except Exception as exc:
+
+                        error = f"DB Error: {exc}"
 
         # -------------------------------------------------
         # VIEW PROGRAM
@@ -179,17 +319,78 @@ def index():
         calories=calories,
         message=message,
         error=error,
-        clients=clients,
+        summary=summary,
+        clients=get_all_clients(),
+        progress_records=get_all_progress(),
         gym_info=GYM_INFO
     )
 
 
 # ---------------------------------------------------------
-# EXPORT CLIENT DATA TO CSV
+# GET ALL CLIENTS
+# ---------------------------------------------------------
+
+def get_all_clients():
+
+    connection = get_db_connection()
+
+    clients = connection.execute("""
+        SELECT *
+        FROM clients
+        ORDER BY id DESC
+    """).fetchall()
+
+    connection.close()
+
+    return clients
+
+
+# ---------------------------------------------------------
+# GET ONE CLIENT
+# ---------------------------------------------------------
+
+def get_client(name):
+
+    connection = get_db_connection()
+
+    client = connection.execute("""
+        SELECT *
+        FROM clients
+        WHERE name = ?
+    """, (name,)).fetchone()
+
+    connection.close()
+
+    return client
+
+
+# ---------------------------------------------------------
+# GET PROGRESS RECORDS
+# ---------------------------------------------------------
+
+def get_all_progress():
+
+    connection = get_db_connection()
+
+    records = connection.execute("""
+        SELECT *
+        FROM progress
+        ORDER BY id DESC
+    """).fetchall()
+
+    connection.close()
+
+    return records
+
+
+# ---------------------------------------------------------
+# EXPORT CSV
 # ---------------------------------------------------------
 
 @app.route("/export")
 def export_csv():
+
+    clients = get_all_clients()
 
     if not clients:
 
@@ -208,7 +409,7 @@ def export_csv():
         "Age",
         "Weight",
         "Program",
-        "Adherence",
+        "Calories",
         "Notes"
     ])
 
@@ -219,7 +420,7 @@ def export_csv():
             client["age"],
             client["weight"],
             client["program"],
-            client["adherence"],
+            client["calories"],
             client["notes"]
         ])
 
