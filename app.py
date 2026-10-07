@@ -1,39 +1,25 @@
-from flask import Flask, render_template, request, Response
+from flask import Flask, render_template, request, redirect, url_for, flash
 import sqlite3
-import csv
-import io
 from datetime import datetime
 
 app = Flask(__name__)
+app.secret_key = "aceest-fitness-secret-key"
 
 DB_NAME = "aceest_fitness.db"
 
-
-# ---------------------------------------------------------
-# FITNESS PROGRAMS
-# ---------------------------------------------------------
-
 PROGRAMS = {
     "Fat Loss (FL)": {
-        "workout": "Back Squat, Cardio, Bench, Deadlift, Recovery",
-        "diet": "Egg Whites, Chicken, Fish Curry",
-        "color_class": "fat-loss",
-        "calorie_factor": 22
+        "factor": 22,
+        "description": "Structured fat-loss training with calorie-controlled nutrition.",
     },
-
     "Muscle Gain (MG)": {
-        "workout": "Squat, Bench, Deadlift, Press, Rows",
-        "diet": "Eggs, Biryani, Mutton Curry",
-        "color_class": "muscle-gain",
-        "calorie_factor": 35
+        "factor": 35,
+        "description": "Strength-focused training with higher calorie intake.",
     },
-
     "Beginner (BG)": {
-        "workout": "Air Squats, Ring Rows, Push-ups",
-        "diet": "Balanced Tamil Meals",
-        "color_class": "beginner",
-        "calorie_factor": 26
-    }
+        "factor": 26,
+        "description": "Beginner-friendly fitness program for building consistency.",
+    },
 }
 
 
@@ -42,28 +28,26 @@ PROGRAMS = {
 # ---------------------------------------------------------
 
 def get_db_connection():
-    connection = sqlite3.connect(DB_NAME)
-    connection.row_factory = sqlite3.Row
-    return connection
+    conn = sqlite3.connect(DB_NAME)
+    conn.row_factory = sqlite3.Row
+    return conn
 
 
 def init_db():
-    connection = get_db_connection()
-    cursor = connection.cursor()
+    conn = get_db_connection()
 
-    cursor.execute("""
+    conn.execute("""
         CREATE TABLE IF NOT EXISTS clients (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT UNIQUE,
             age INTEGER,
             weight REAL,
             program TEXT,
-            calories INTEGER,
-            notes TEXT
+            calories INTEGER
         )
     """)
 
-    cursor.execute("""
+    conn.execute("""
         CREATE TABLE IF NOT EXISTS progress (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             client_name TEXT,
@@ -72,373 +56,314 @@ def init_db():
         )
     """)
 
-    connection.commit()
-    connection.close()
-
-
-init_db()
+    conn.commit()
+    conn.close()
 
 
 # ---------------------------------------------------------
-# GYM INFORMATION
+# HELPERS
 # ---------------------------------------------------------
 
-GYM_INFO = {
-    "capacity": 150,
-    "area": "10,000 sq ft",
-    "break_even": 250
-}
+def calculate_calories(weight, program):
+    factor = PROGRAMS[program]["factor"]
+    return int(float(weight) * factor)
+
+
+def get_client(name):
+    conn = get_db_connection()
+
+    client = conn.execute(
+        "SELECT * FROM clients WHERE name = ?",
+        (name,)
+    ).fetchone()
+
+    conn.close()
+    return client
+
+
+def get_all_clients():
+    conn = get_db_connection()
+
+    clients = conn.execute(
+        "SELECT * FROM clients ORDER BY id DESC"
+    ).fetchall()
+
+    conn.close()
+    return clients
+
+
+def get_all_progress():
+    conn = get_db_connection()
+
+    progress = conn.execute(
+        """
+        SELECT *
+        FROM progress
+        ORDER BY id DESC
+        """
+    ).fetchall()
+
+    conn.close()
+    return progress
 
 
 # ---------------------------------------------------------
-# HOME PAGE
+# MAIN PAGE
 # ---------------------------------------------------------
 
 @app.route("/", methods=["GET", "POST"])
 def index():
 
-    name = ""
-    age = ""
-    weight = ""
-    selected_program = ""
-    adherence = 0
-    notes = ""
+    form_data = {
+        "name": "",
+        "age": "",
+        "weight": "",
+        "program": "",
+        "adherence": 0
+    }
 
-    selected_data = None
-    calories = None
-    message = ""
-    error = ""
+    selected_client = None
     summary = None
 
     if request.method == "POST":
 
-        action = request.form.get("action", "")
+        action = request.form.get("action")
 
-        name = request.form.get("name", "").strip()
-        age = request.form.get("age", "").strip()
-        weight = request.form.get("weight", "").strip()
-        selected_program = request.form.get("program", "")
-        adherence = request.form.get("adherence", "0")
-        notes = request.form.get("notes", "").strip()
-
-        selected_data = PROGRAMS.get(selected_program)
-
-        # -------------------------------------------------
-        # RESET
-        # -------------------------------------------------
-
-        if action == "reset":
-
-            return render_template(
-                "index.html",
-                name="",
-                age="",
-                weight="",
-                selected_program="",
-                adherence=0,
-                notes="",
-                selected_data=None,
-                calories=None,
-                message="",
-                error="",
-                summary=None,
-                clients=get_all_clients(),
-                progress_records=get_all_progress(),
-                gym_info=GYM_INFO
-            )
-
-        # -------------------------------------------------
-        # CALCULATE CALORIES
-        # -------------------------------------------------
-
-        if selected_data and weight:
-
-            try:
-
-                weight_value = float(weight)
-
-                if weight_value > 0:
-
-                    calories = int(
-                        weight_value
-                        * selected_data["calorie_factor"]
-                    )
-
-            except ValueError:
-
-                error = "Please enter a valid weight."
-
-        # -------------------------------------------------
+        # ---------------------------------------------
         # SAVE CLIENT
-        # -------------------------------------------------
+        # ---------------------------------------------
 
         if action == "save":
 
-            if not name or not selected_program:
+            name = request.form.get("name", "").strip()
+            age = request.form.get("age", "").strip()
+            weight = request.form.get("weight", "").strip()
+            program = request.form.get("program", "").strip()
+            adherence = request.form.get("adherence", "0")
 
-                error = "Name and Program required"
+            form_data.update({
+                "name": name,
+                "age": age,
+                "weight": weight,
+                "program": program,
+                "adherence": adherence
+            })
 
-            elif not error:
+            if not name or not program:
+                flash("Name and Program are required.", "error")
 
+            elif program not in PROGRAMS:
+                flash("Please select a valid program.", "error")
+
+            else:
                 try:
+                    age_value = int(age)
+                    weight_value = float(weight)
+                    calories = calculate_calories(weight_value, program)
 
-                    age_value = int(age) if age else 0
-                    weight_value = float(weight) if weight else 0
+                    conn = get_db_connection()
 
-                    connection = get_db_connection()
+                    conn.execute(
+                        """
+                        INSERT OR REPLACE INTO clients
+                        (name, age, weight, program, calories)
+                        VALUES (?, ?, ?, ?, ?)
+                        """,
+                        (
+                            name,
+                            age_value,
+                            weight_value,
+                            program,
+                            calories
+                        )
+                    )
 
-                    connection.execute("""
-                        INSERT INTO clients
-                        (name, age, weight, program, calories, notes)
-                        VALUES (?, ?, ?, ?, ?, ?)
+                    conn.commit()
+                    conn.close()
 
-                        ON CONFLICT(name)
-                        DO UPDATE SET
-                            age = excluded.age,
-                            weight = excluded.weight,
-                            program = excluded.program,
-                            calories = excluded.calories,
-                            notes = excluded.notes
-                    """, (
-                        name,
-                        age_value,
-                        weight_value,
-                        selected_program,
-                        calories,
-                        notes
-                    ))
+                    flash("Client data saved successfully.", "success")
 
-                    connection.commit()
-                    connection.close()
+                    selected_client = get_client(name)
 
-                    message = "Client data saved successfully"
+                except ValueError:
+                    flash(
+                        "Age must be an integer and Weight must be a number.",
+                        "error"
+                    )
 
-                except Exception as exc:
-
-                    error = f"DB Error: {exc}"
-
-        # -------------------------------------------------
+        # ---------------------------------------------
         # LOAD CLIENT
-        # -------------------------------------------------
+        # ---------------------------------------------
 
         elif action == "load":
 
-            if not name:
+            name = request.form.get("name", "").strip()
 
-                error = "Please enter a client name."
+            form_data["name"] = name
+
+            if not name:
+                flash("Enter a client name to load.", "error")
 
             else:
-
                 client = get_client(name)
 
                 if client is None:
-
-                    error = "Client not found"
+                    flash("Client not found.", "error")
 
                 else:
+                    selected_client = client
 
-                    name = client["name"]
-                    age = client["age"]
-                    weight = client["weight"]
-                    selected_program = client["program"]
-                    calories = client["calories"]
-                    notes = client["notes"] or ""
+                    form_data.update({
+                        "name": client["name"],
+                        "age": client["age"],
+                        "weight": client["weight"],
+                        "program": client["program"],
+                        "adherence": 0
+                    })
 
-                    selected_data = PROGRAMS.get(
-                        selected_program
-                    )
-
-                    summary = client
-
-        # -------------------------------------------------
+        # ---------------------------------------------
         # SAVE PROGRESS
-        # -------------------------------------------------
+        # ---------------------------------------------
 
         elif action == "progress":
 
-            if not name:
+            name = request.form.get("name", "").strip()
+            adherence = request.form.get("adherence", "0")
 
-                error = "Please enter a client name."
+            form_data.update({
+                "name": name,
+                "adherence": adherence
+            })
+
+            if not name:
+                flash("Enter a client name before saving progress.", "error")
 
             else:
-
                 client = get_client(name)
 
                 if client is None:
-
-                    error = "Client not found. Save the client first."
-
-                else:
-
-                    week = datetime.now().strftime(
-                        "Week %U - %Y"
+                    flash(
+                        "Client not found. Save the client first.",
+                        "error"
                     )
 
+                else:
                     try:
+                        adherence_value = int(float(adherence))
 
-                        connection = get_db_connection()
+                        if not 0 <= adherence_value <= 100:
+                            raise ValueError
 
-                        connection.execute("""
+                        week = datetime.now().strftime(
+                            "Week %U - %Y"
+                        )
+
+                        conn = get_db_connection()
+
+                        conn.execute(
+                            """
                             INSERT INTO progress
                             (client_name, week, adherence)
                             VALUES (?, ?, ?)
-                        """, (
-                            name,
-                            week,
-                            int(adherence)
-                        ))
+                            """,
+                            (
+                                name,
+                                week,
+                                adherence_value
+                            )
+                        )
 
-                        connection.commit()
-                        connection.close()
+                        conn.commit()
+                        conn.close()
 
-                        message = "Weekly progress logged"
+                        flash(
+                            "Weekly progress logged successfully.",
+                            "success"
+                        )
 
-                    except Exception as exc:
+                        selected_client = get_client(name)
 
-                        error = f"DB Error: {exc}"
+                    except ValueError:
+                        flash(
+                            "Adherence must be between 0 and 100.",
+                            "error"
+                        )
 
-        # -------------------------------------------------
+        # ---------------------------------------------
         # VIEW PROGRAM
-        # -------------------------------------------------
+        # ---------------------------------------------
 
         elif action == "view":
 
-            if not selected_program:
+            name = request.form.get("name", "").strip()
+            age = request.form.get("age", "").strip()
+            weight = request.form.get("weight", "").strip()
+            program = request.form.get("program", "").strip()
+            adherence = request.form.get("adherence", "0")
 
-                error = "Please select a program."
+            form_data.update({
+                "name": name,
+                "age": age,
+                "weight": weight,
+                "program": program,
+                "adherence": adherence
+            })
+
+            if program not in PROGRAMS:
+                flash("Please select a program.", "error")
+
+            else:
+                try:
+                    if weight:
+                        calories = calculate_calories(
+                            float(weight),
+                            program
+                        )
+                    else:
+                        calories = None
+
+                    summary = {
+                        "name": name,
+                        "age": age,
+                        "weight": weight,
+                        "program": program,
+                        "calories": calories
+                    }
+
+                except ValueError:
+                    flash("Weight must be a number.", "error")
+
+        # ---------------------------------------------
+        # RESET
+        # ---------------------------------------------
+
+        elif action == "reset":
+
+            return redirect(url_for("index"))
+
+    clients = get_all_clients()
+    progress = get_all_progress()
 
     return render_template(
         "index.html",
-        name=name,
-        age=age,
-        weight=weight,
-        selected_program=selected_program,
-        adherence=adherence,
-        notes=notes,
-        selected_data=selected_data,
-        calories=calories,
-        message=message,
-        error=error,
+        programs=PROGRAMS,
+        form_data=form_data,
+        selected_client=selected_client,
         summary=summary,
-        clients=get_all_clients(),
-        progress_records=get_all_progress(),
-        gym_info=GYM_INFO
+        clients=clients,
+        progress=progress
     )
 
 
 # ---------------------------------------------------------
-# GET ALL CLIENTS
-# ---------------------------------------------------------
-
-def get_all_clients():
-
-    connection = get_db_connection()
-
-    clients = connection.execute("""
-        SELECT *
-        FROM clients
-        ORDER BY id DESC
-    """).fetchall()
-
-    connection.close()
-
-    return clients
-
-
-# ---------------------------------------------------------
-# GET ONE CLIENT
-# ---------------------------------------------------------
-
-def get_client(name):
-
-    connection = get_db_connection()
-
-    client = connection.execute("""
-        SELECT *
-        FROM clients
-        WHERE name = ?
-    """, (name,)).fetchone()
-
-    connection.close()
-
-    return client
-
-
-# ---------------------------------------------------------
-# GET PROGRESS RECORDS
-# ---------------------------------------------------------
-
-def get_all_progress():
-
-    connection = get_db_connection()
-
-    records = connection.execute("""
-        SELECT *
-        FROM progress
-        ORDER BY id DESC
-    """).fetchall()
-
-    connection.close()
-
-    return records
-
-
-# ---------------------------------------------------------
-# EXPORT CSV
-# ---------------------------------------------------------
-
-@app.route("/export")
-def export_csv():
-
-    clients = get_all_clients()
-
-    if not clients:
-
-        return (
-            "No clients to export. "
-            "Please save at least one client first.",
-            400
-        )
-
-    output = io.StringIO()
-
-    writer = csv.writer(output)
-
-    writer.writerow([
-        "Name",
-        "Age",
-        "Weight",
-        "Program",
-        "Calories",
-        "Notes"
-    ])
-
-    for client in clients:
-
-        writer.writerow([
-            client["name"],
-            client["age"],
-            client["weight"],
-            client["program"],
-            client["calories"],
-            client["notes"]
-        ])
-
-    response = Response(
-        output.getvalue(),
-        mimetype="text/csv"
-    )
-
-    response.headers["Content-Disposition"] = (
-        "attachment; filename=aceest_clients.csv"
-    )
-
-    return response
-
-
-# ---------------------------------------------------------
-# RUN APPLICATION
+# APPLICATION START
 # ---------------------------------------------------------
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    init_db()
+
+    app.run(
+        host="127.0.0.1",
+        port=5000,
+        debug=True
+    )

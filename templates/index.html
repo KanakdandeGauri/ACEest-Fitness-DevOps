@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -25,777 +23,524 @@
             color: white;
         }
 
-        /* HEADER */
-
         header {
             background: #d4af37;
             color: black;
-            padding: 25px;
             text-align: center;
+            padding: 25px;
         }
 
         header h1 {
             margin: 0;
-            font-size: 28px;
+            font-size: 30px;
         }
-
-        /* LAYOUT */
 
         .container {
-            display: flex;
+            width: 92%;
+            max-width: 1300px;
+            margin: 25px auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 360px 1fr;
             gap: 25px;
-            padding: 25px;
-            max-width: 1250px;
-            margin: auto;
         }
 
-        .left-panel {
-            width: 320px;
-            background: #1a1a1a;
-            border: 1px solid #555;
+        .card {
+            background: #242424;
+            border: 1px solid #444;
+            border-radius: 10px;
             padding: 20px;
-            border-radius: 8px;
+            margin-bottom: 20px;
         }
 
-        .right-panel {
-            flex: 1;
-            min-width: 0;
-        }
-
-        /* HEADINGS */
-
-        h2 {
-            color: #d4af37;
-        }
-
-        .content-box h3,
-        .chart-container h3,
-        .gym-info h3 {
+        .card h2 {
             color: #d4af37;
             margin-top: 0;
         }
 
-        /* FORM */
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
         label {
             display: block;
-            margin-bottom: 6px;
+            margin-top: 12px;
+            margin-bottom: 5px;
+            color: #ddd;
         }
 
         input,
-        select,
-        textarea {
+        select {
             width: 100%;
             padding: 10px;
             background: #333;
+            border: 1px solid #555;
+            border-radius: 5px;
             color: white;
-            border: 1px solid #666;
-            border-radius: 4px;
-        }
-
-        textarea {
-            min-height: 70px;
-            resize: vertical;
         }
 
         input[type="range"] {
             padding: 0;
         }
 
-        .button-group {
+        .adherence-value {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
             margin-top: 20px;
         }
 
-        button,
-        .export-button {
-            display: inline-block;
-            padding: 10px 15px;
-            margin: 5px 3px;
+        button {
+            padding: 11px;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
             background: #d4af37;
             color: black;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
         }
 
-        button:hover,
-        .export-button:hover {
+        button:hover {
             opacity: 0.85;
         }
 
-        .reset-button {
-            background: #777;
+        .reset {
+            background: #555;
             color: white;
         }
 
-        /* MESSAGES */
-
         .message {
             padding: 12px;
-            margin-bottom: 15px;
             border-radius: 5px;
-            background: #234d2c;
-            color: #9cffad;
+            margin-bottom: 15px;
+        }
+
+        .success {
+            background: #214d2b;
+            border: 1px solid #3f8f4e;
         }
 
         .error {
-            padding: 12px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            background: #5a2020;
-            color: #ffb3b3;
+            background: #5a2222;
+            border: 1px solid #a94442;
         }
 
-        /* CONTENT */
-
-        .content-box {
+        .profile {
             background: #111;
-            border: 1px solid #555;
-            border-radius: 8px;
             padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .workout-content {
-            white-space: pre-line;
-        }
-
-        .fat-loss {
-            color: #e74c3c;
-        }
-
-        .muscle-gain {
-            color: #2ecc71;
-        }
-
-        .beginner {
-            color: #3498db;
-        }
-
-        .calories {
-            color: #d4af37;
-            font-size: 18px;
-            font-weight: bold;
-            margin: 15px 0;
-        }
-
-        /* GYM INFO */
-
-        .gym-info {
-            background: #222;
-            border: 1px solid #444;
             border-radius: 8px;
-            padding: 15px;
-            margin-top: 20px;
+            border-left: 4px solid #d4af37;
         }
 
-        .gym-info p {
+        .profile p {
             margin: 8px 0;
         }
 
-        /* CLIENT TABLE */
+        .program-description {
+            background: #111;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
 
-        .table-container {
-            overflow-x: auto;
+        .calories {
+            font-size: 28px;
+            color: #d4af37;
+            font-weight: bold;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            background: #111;
+            margin-top: 10px;
         }
 
         th,
         td {
-            border: 1px solid #444;
             padding: 10px;
+            border-bottom: 1px solid #444;
             text-align: left;
         }
 
         th {
-            background: #d4af37;
-            color: black;
+            color: #d4af37;
         }
 
-        tr:nth-child(even) {
-            background: #222;
-        }
-
-        /* SUMMARY */
-
-        .summary {
-            background: #111;
-            border: 1px solid #555;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .summary-line {
-            margin: 8px 0;
-        }
-
-        /* PROGRESS */
-
-        .progress-record {
-            background: #222;
-            border: 1px solid #444;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 6px;
-        }
-
-        .progress-track {
+        .progress-bar {
             width: 100%;
-            height: 24px;
-            background: #333;
-            border-radius: 4px;
+            height: 18px;
+            background: #444;
+            border-radius: 10px;
             overflow: hidden;
         }
 
         .progress-fill {
             height: 100%;
             background: #d4af37;
-            border-radius: 4px;
         }
 
         .progress-0 {
             width: 0%;
         }
 
-        .progress-10 {
-            width: 10%;
-        }
-
-        .progress-20 {
-            width: 20%;
-        }
-
-        .progress-30 {
-            width: 30%;
-        }
-
-        .progress-40 {
-            width: 40%;
+        .progress-25 {
+            width: 25%;
         }
 
         .progress-50 {
             width: 50%;
         }
 
-        .progress-60 {
-            width: 60%;
-        }
-
-        .progress-70 {
-            width: 70%;
-        }
-
-        .progress-80 {
-            width: 80%;
-        }
-
-        .progress-90 {
-            width: 90%;
+        .progress-75 {
+            width: 75%;
         }
 
         .progress-100 {
             width: 100%;
         }
 
-        .empty-state {
+        .empty {
             color: #aaa;
-            padding: 15px 0;
+            font-style: italic;
         }
-
-        /* MOBILE */
 
         @media (max-width: 900px) {
 
-            .container {
-                flex-direction: column;
-            }
-
-            .left-panel {
-                width: 100%;
+            .grid {
+                grid-template-columns: 1fr;
             }
 
         }
 
     </style>
-
 </head>
-
 
 <body>
 
-
-<!-- =====================================================
-     HEADER
-===================================================== -->
-
 <header>
-
-    <h1>
-        ACEest Functional Fitness System
-    </h1>
-
+    <h1>ACEest Functional Fitness System</h1>
 </header>
-
 
 <div class="container">
 
+    {% with messages = get_flashed_messages(with_categories=true) %}
 
-    <!-- =================================================
-         LEFT PANEL
-    ================================================== -->
+        {% if messages %}
 
-    <div class="left-panel">
+            {% for category, message in messages %}
 
-        <h2>
-            Client Management
-        </h2>
+                <div class="message {{ category }}">
+                    {{ message }}
+                </div>
 
-
-        {% if message %}
-
-            <div class="message">
-                {{ message }}
-            </div>
+            {% endfor %}
 
         {% endif %}
 
-
-        {% if error %}
-
-            <div class="error">
-                {{ error }}
-            </div>
-
-        {% endif %}
+    {% endwith %}
 
 
-        <form method="POST">
+    <div class="grid">
 
+        <!-- LEFT PANEL -->
 
-            <!-- NAME -->
+        <div>
 
-            <div class="form-group">
+            <div class="card">
 
-                <label for="name">
-                    Name
-                </label>
+                <h2>Client Management</h2>
 
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value="{{ name }}"
-                >
+                <form method="POST">
 
-            </div>
+                    <label for="name">
+                        Name
+                    </label>
 
-
-            <!-- AGE -->
-
-            <div class="form-group">
-
-                <label for="age">
-                    Age
-                </label>
-
-                <input
-                    type="number"
-                    id="age"
-                    name="age"
-                    min="0"
-                    value="{{ age }}"
-                >
-
-            </div>
-
-
-            <!-- WEIGHT -->
-
-            <div class="form-group">
-
-                <label for="weight">
-                    Weight (kg)
-                </label>
-
-                <input
-                    type="number"
-                    id="weight"
-                    name="weight"
-                    min="0"
-                    step="0.1"
-                    value="{{ weight }}"
-                >
-
-            </div>
-
-
-            <!-- PROGRAM -->
-
-            <div class="form-group">
-
-                <label for="program">
-                    Program
-                </label>
-
-                <select
-                    id="program"
-                    name="program"
-                >
-
-                    <option value="">
-                        -- Select Program --
-                    </option>
-
-                    <option
-                        value="Fat Loss (FL)"
-                        {% if selected_program == "Fat Loss (FL)" %}
-                            selected
-                        {% endif %}
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value="{{ form_data.name }}"
+                        placeholder="Client name"
                     >
-                        Fat Loss (FL)
-                    </option>
 
-                    <option
-                        value="Muscle Gain (MG)"
-                        {% if selected_program == "Muscle Gain (MG)" %}
-                            selected
-                        {% endif %}
+
+                    <label for="age">
+                        Age
+                    </label>
+
+                    <input
+                        type="number"
+                        id="age"
+                        name="age"
+                        value="{{ form_data.age }}"
+                        min="1"
+                        max="120"
+                        placeholder="Age"
                     >
-                        Muscle Gain (MG)
-                    </option>
 
-                    <option
-                        value="Beginner (BG)"
-                        {% if selected_program == "Beginner (BG)" %}
-                            selected
-                        {% endif %}
+
+                    <label for="weight">
+                        Weight (kg)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="weight"
+                        name="weight"
+                        value="{{ form_data.weight }}"
+                        step="0.1"
+                        min="1"
+                        placeholder="Weight"
                     >
-                        Beginner (BG)
-                    </option>
 
-                </select>
+
+                    <label for="program">
+                        Program
+                    </label>
+
+                    <select
+                        id="program"
+                        name="program"
+                    >
+
+                        <option value="">
+                            Select Program
+                        </option>
+
+                        {% for name, program in programs.items() %}
+
+                            <option
+                                value="{{ name }}"
+                                {% if form_data.program == name %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ name }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+
+                    <label for="adherence">
+                        Weekly Adherence
+                    </label>
+
+                    <input
+                        type="range"
+                        id="adherence"
+                        name="adherence"
+                        min="0"
+                        max="100"
+                        value="{{ form_data.adherence }}"
+                        oninput="updateAdherence(this.value)"
+                    >
+
+                    <div>
+                        Adherence:
+                        <span
+                            id="adherenceValue"
+                            class="adherence-value"
+                        >
+                            {{ form_data.adherence }}%
+                        </span>
+                    </div>
+
+
+                    <div class="buttons">
+
+                        <button
+                            type="submit"
+                            name="action"
+                            value="save"
+                        >
+                            Save Client
+                        </button>
+
+                        <button
+                            type="submit"
+                            name="action"
+                            value="load"
+                        >
+                            Load Client
+                        </button>
+
+                        <button
+                            type="submit"
+                            name="action"
+                            value="progress"
+                        >
+                            Save Progress
+                        </button>
+
+                        <button
+                            type="submit"
+                            name="action"
+                            value="view"
+                        >
+                            View Program
+                        </button>
+
+                        <button
+                            type="submit"
+                            name="action"
+                            value="reset"
+                            class="reset"
+                        >
+                            Reset
+                        </button>
+
+                    </div>
+
+                </form>
 
             </div>
 
 
-            <!-- ADHERENCE -->
+            <div class="card">
 
-            <div class="form-group">
+                <h2>Available Programs</h2>
 
-                <label for="adherence">
+                {% for name, program in programs.items() %}
 
-                    Weekly Adherence:
-                    <span id="adherence-value">
-                        {{ adherence }}%
-                    </span>
+                    <div class="program-description">
 
-                </label>
+                        <strong>
+                            {{ name }}
+                        </strong>
 
-                <input
-                    type="range"
-                    id="adherence"
-                    name="adherence"
-                    min="0"
-                    max="100"
-                    step="1"
-                    value="{{ adherence }}"
-                    oninput="updateAdherence(this.value)"
-                >
+                        <p>
+                            {{ program.description }}
+                        </p>
 
-            </div>
+                        <small>
+                            Calorie factor:
+                            {{ program.factor }}
+                        </small>
 
+                    </div>
 
-            <!-- NOTES -->
-
-            <div class="form-group">
-
-                <label for="notes">
-                    Coach Notes
-                </label>
-
-                <textarea
-                    id="notes"
-                    name="notes"
-                    placeholder="Enter coach notes..."
-                >{{ notes }}</textarea>
+                {% endfor %}
 
             </div>
-
-
-            <!-- BUTTONS -->
-
-            <div class="button-group">
-
-                <button
-                    type="submit"
-                    name="action"
-                    value="save"
-                >
-                    Save Client
-                </button>
-
-
-                <button
-                    type="submit"
-                    name="action"
-                    value="load"
-                >
-                    Load Client
-                </button>
-
-
-                <button
-                    type="submit"
-                    name="action"
-                    value="progress"
-                >
-                    Save Progress
-                </button>
-
-
-                <button
-                    type="submit"
-                    name="action"
-                    value="view"
-                >
-                    View Program
-                </button>
-
-
-                <button
-                    type="submit"
-                    name="action"
-                    value="reset"
-                    class="reset-button"
-                >
-                    Reset
-                </button>
-
-            </div>
-
-        </form>
-
-
-        <!-- EXPORT -->
-
-        <a
-            href="/export"
-            class="export-button"
-        >
-            Export CSV
-        </a>
-
-
-        <!-- GYM INFORMATION -->
-
-        <div class="gym-info">
-
-            <h3>
-                Gym Information
-            </h3>
-
-            <p>
-                <strong>Capacity:</strong>
-                {{ gym_info.capacity }} users
-            </p>
-
-            <p>
-                <strong>Area:</strong>
-                {{ gym_info.area }}
-            </p>
-
-            <p>
-                <strong>Break-even:</strong>
-                {{ gym_info.break_even }} members
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <!-- =================================================
-         RIGHT PANEL
-    ================================================== -->
-
-    <div class="right-panel">
-
-
-        <!-- PROGRAM DETAILS -->
-
-        <div class="content-box">
-
-            <h3>
-                Weekly Training Plan
-            </h3>
-
-
-            {% if selected_data %}
-
-                <div
-                    class="{{ selected_data.color_class }} workout-content"
-                >
-                    {{ selected_data.workout }}
-                </div>
-
-            {% else %}
-
-                <div class="empty-state">
-
-                    Select a program to view the
-                    weekly training plan.
-
-                </div>
-
-            {% endif %}
 
         </div>
 
 
-        <!-- NUTRITION -->
+        <!-- RIGHT PANEL -->
 
-        <div class="content-box">
+        <div>
 
-            <h3>
-                Nutrition Plan
-            </h3>
+            <div class="card">
 
+                <h2>Client Summary</h2>
 
-            {% if selected_data %}
+                {% if selected_client %}
 
-                <div class="workout-content">
-                    {{ selected_data.diet }}
-                </div>
+                    <div class="profile">
 
-            {% else %}
+                        <p>
+                            <strong>Name:</strong>
+                            {{ selected_client.name }}
+                        </p>
 
-                <div class="empty-state">
+                        <p>
+                            <strong>Age:</strong>
+                            {{ selected_client.age }}
+                        </p>
 
-                    Select a program to view
-                    the nutrition plan.
+                        <p>
+                            <strong>Weight:</strong>
+                            {{ selected_client.weight }} kg
+                        </p>
 
-                </div>
+                        <p>
+                            <strong>Program:</strong>
+                            {{ selected_client.program }}
+                        </p>
 
-            {% endif %}
+                        <p>
+                            <strong>Calories:</strong>
+                            {{ selected_client.calories }} kcal/day
+                        </p>
 
-        </div>
+                    </div>
 
+                {% elif summary %}
 
-        <!-- CALORIES -->
+                    <div class="profile">
 
-        <div class="calories">
+                        <p>
+                            <strong>Name:</strong>
+                            {{ summary.name or "Not provided" }}
+                        </p>
 
-            {% if calories is not none %}
+                        <p>
+                            <strong>Age:</strong>
+                            {{ summary.age or "Not provided" }}
+                        </p>
 
-                Estimated Calories:
-                {{ calories }} kcal/day
+                        <p>
+                            <strong>Weight:</strong>
+                            {{ summary.weight or "Not provided" }} kg
+                        </p>
 
-            {% else %}
+                        <p>
+                            <strong>Program:</strong>
+                            {{ summary.program }}
+                        </p>
 
-                Estimated Calories: --
+                        {% if summary.calories %}
 
-            {% endif %}
+                            <p>
+                                <strong>Estimated Calories:</strong>
+                            </p>
 
-        </div>
+                            <div class="calories">
+                                {{ summary.calories }}
+                                kcal/day
+                            </div>
 
+                        {% endif %}
 
-        <!-- =================================================
-             CLIENT SUMMARY
-        ================================================== -->
+                    </div>
 
-        {% if summary %}
+                {% else %}
 
-            <div class="summary">
+                    <p class="empty">
+                        Load a client or select a program to view information.
+                    </p>
 
-                <h3>
-                    Client Summary
-                </h3>
-
-                <div class="summary-line">
-                    <strong>Name:</strong>
-                    {{ summary.name }}
-                </div>
-
-                <div class="summary-line">
-                    <strong>Age:</strong>
-                    {{ summary.age }}
-                </div>
-
-                <div class="summary-line">
-                    <strong>Weight:</strong>
-                    {{ summary.weight }} kg
-                </div>
-
-                <div class="summary-line">
-                    <strong>Program:</strong>
-                    {{ summary.program }}
-                </div>
-
-                <div class="summary-line">
-                    <strong>Calories:</strong>
-                    {{ summary.calories }} kcal/day
-                </div>
-
-                <div class="summary-line">
-                    <strong>Coach Notes:</strong>
-                    {{ summary.notes or "None" }}
-                </div>
+                {% endif %}
 
             </div>
 
-        {% endif %}
 
+            <div class="card">
 
-        <!-- =================================================
-             CLIENT DATABASE
-        ================================================== -->
+                <h2>Saved Clients</h2>
 
-        <div class="content-box">
-
-            <h3>
-                Saved Clients
-            </h3>
-
-
-            {% if clients %}
-
-                <div class="table-container">
+                {% if clients %}
 
                     <table>
 
                         <thead>
 
                             <tr>
-
                                 <th>Name</th>
                                 <th>Age</th>
                                 <th>Weight</th>
                                 <th>Program</th>
                                 <th>Calories</th>
-                                <th>Notes</th>
-
                             </tr>
 
                         </thead>
-
 
                         <tbody>
 
@@ -812,7 +557,7 @@
                                     </td>
 
                                     <td>
-                                        {{ client.weight }}
+                                        {{ client.weight }} kg
                                     </td>
 
                                     <td>
@@ -823,8 +568,93 @@
                                         {{ client.calories }}
                                     </td>
 
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                {% else %}
+
+                    <p class="empty">
+                        No clients saved yet.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="card">
+
+                <h2>Weekly Progress</h2>
+
+                {% if progress %}
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Client</th>
+                                <th>Week</th>
+                                <th>Adherence</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for item in progress %}
+
+                                <tr>
+
                                     <td>
-                                        {{ client.notes or "" }}
+                                        {{ item.client_name }}
+                                    </td>
+
+                                    <td>
+                                        {{ item.week }}
+                                    </td>
+
+                                    <td>
+
+                                        {{ item.adherence }}%
+
+                                        {% if item.adherence >= 100 %}
+
+                                            <div class="progress-bar">
+                                                <div class="progress-fill progress-100"></div>
+                                            </div>
+
+                                        {% elif item.adherence >= 75 %}
+
+                                            <div class="progress-bar">
+                                                <div class="progress-fill progress-75"></div>
+                                            </div>
+
+                                        {% elif item.adherence >= 50 %}
+
+                                            <div class="progress-bar">
+                                                <div class="progress-fill progress-50"></div>
+                                            </div>
+
+                                        {% elif item.adherence > 0 %}
+
+                                            <div class="progress-bar">
+                                                <div class="progress-fill progress-25"></div>
+                                            </div>
+
+                                        {% else %}
+
+                                            <div class="progress-bar">
+                                                <div class="progress-fill progress-0"></div>
+                                            </div>
+
+                                        {% endif %}
+
                                     </td>
 
                                 </tr>
@@ -835,145 +665,15 @@
 
                     </table>
 
-                </div>
+                {% else %}
 
-            {% else %}
+                    <p class="empty">
+                        No weekly progress has been recorded yet.
+                    </p>
 
-                <div class="empty-state">
-                    No clients saved yet.
-                </div>
+                {% endif %}
 
-            {% endif %}
-
-        </div>
-
-
-        <!-- =================================================
-             WEEKLY PROGRESS
-        ================================================== -->
-
-        <div class="content-box">
-
-            <h3>
-                Weekly Progress
-            </h3>
-
-
-            {% if progress_records %}
-
-                {% for record in progress_records %}
-
-                    <div class="progress-record">
-
-                        <div class="progress-header">
-
-                            <span>
-                                <strong>
-                                    {{ record.client_name }}
-                                </strong>
-                            </span>
-
-                            <span>
-                                {{ record.adherence }}%
-                            </span>
-
-                        </div>
-
-
-                        <div class="progress-track">
-
-                            {% set progress_value =
-                                record.adherence|int %}
-
-
-                            {% if progress_value >= 95 %}
-
-                                <div
-                                    class="progress-fill progress-100"
-                                ></div>
-
-                            {% elif progress_value >= 85 %}
-
-                                <div
-                                    class="progress-fill progress-90"
-                                ></div>
-
-                            {% elif progress_value >= 75 %}
-
-                                <div
-                                    class="progress-fill progress-80"
-                                ></div>
-
-                            {% elif progress_value >= 65 %}
-
-                                <div
-                                    class="progress-fill progress-70"
-                                ></div>
-
-                            {% elif progress_value >= 55 %}
-
-                                <div
-                                    class="progress-fill progress-60"
-                                ></div>
-
-                            {% elif progress_value >= 45 %}
-
-                                <div
-                                    class="progress-fill progress-50"
-                                ></div>
-
-                            {% elif progress_value >= 35 %}
-
-                                <div
-                                    class="progress-fill progress-40"
-                                ></div>
-
-                            {% elif progress_value >= 25 %}
-
-                                <div
-                                    class="progress-fill progress-30"
-                                ></div>
-
-                            {% elif progress_value >= 15 %}
-
-                                <div
-                                    class="progress-fill progress-20"
-                                ></div>
-
-                            {% elif progress_value > 0 %}
-
-                                <div
-                                    class="progress-fill progress-10"
-                                ></div>
-
-                            {% else %}
-
-                                <div
-                                    class="progress-fill progress-0"
-                                ></div>
-
-                            {% endif %}
-
-                        </div>
-
-
-                        <small>
-                            {{ record.week }}
-                        </small>
-
-                    </div>
-
-                {% endfor %}
-
-            {% else %}
-
-                <div class="empty-state">
-
-                    No weekly progress records yet.
-
-                </div>
-
-            {% endif %}
+            </div>
 
         </div>
 
@@ -985,16 +685,11 @@
 <script>
 
     function updateAdherence(value) {
-
-        document.getElementById(
-            "adherence-value"
-        ).textContent = value + "%";
-
+        document.getElementById("adherenceValue").textContent =
+            value + "%";
     }
 
 </script>
 
-
 </body>
-
 </html>
