@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>ACEest Fitness & Performance</title>
 
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -17,6 +20,10 @@
             background: #1a1a1a;
             color: white;
         }
+
+        /* -------------------------------------------------
+           HEADER
+        ------------------------------------------------- */
 
         header {
             background: #d4af37;
@@ -30,11 +37,15 @@
             font-size: 28px;
         }
 
+        /* -------------------------------------------------
+           MAIN LAYOUT
+        ------------------------------------------------- */
+
         .container {
             display: flex;
             gap: 25px;
             padding: 25px;
-            max-width: 1200px;
+            max-width: 1250px;
             margin: auto;
         }
 
@@ -46,10 +57,29 @@
             border-radius: 8px;
         }
 
-        .left-panel h2,
-        .right-panel h2 {
+        .right-panel {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* -------------------------------------------------
+           HEADINGS
+        ------------------------------------------------- */
+
+        h2 {
             color: #d4af37;
         }
+
+        .content-box h3,
+        .chart-container h3,
+        .gym-info h3 {
+            color: #d4af37;
+            margin-top: 0;
+        }
+
+        /* -------------------------------------------------
+           FORM
+        ------------------------------------------------- */
 
         .form-group {
             margin-bottom: 15px;
@@ -62,13 +92,19 @@
         }
 
         input,
-        select {
+        select,
+        textarea {
             width: 100%;
             padding: 10px;
             background: #333;
             color: white;
             border: 1px solid #666;
             border-radius: 4px;
+        }
+
+        textarea {
+            min-height: 75px;
+            resize: vertical;
         }
 
         input[type="range"] {
@@ -79,7 +115,9 @@
             margin-top: 20px;
         }
 
-        button {
+        button,
+        .export-button {
+            display: inline-block;
             padding: 10px 15px;
             margin: 5px 3px;
             border: none;
@@ -88,9 +126,11 @@
             color: black;
             font-weight: bold;
             cursor: pointer;
+            text-decoration: none;
         }
 
-        button:hover {
+        button:hover,
+        .export-button:hover {
             opacity: 0.85;
         }
 
@@ -99,9 +139,29 @@
             color: white;
         }
 
-        .right-panel {
-            flex: 1;
+        /* -------------------------------------------------
+           MESSAGES
+        ------------------------------------------------- */
+
+        .message {
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            background: #234d2c;
+            color: #9cffad;
         }
+
+        .error {
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            background: #5a2020;
+            color: #ffb3b3;
+        }
+
+        /* -------------------------------------------------
+           PROGRAM DETAILS
+        ------------------------------------------------- */
 
         .content-box {
             background: #111;
@@ -109,12 +169,6 @@
             border-radius: 8px;
             padding: 20px;
             margin-bottom: 20px;
-            white-space: pre-line;
-        }
-
-        .content-box h3 {
-            color: #d4af37;
-            margin-top: 0;
         }
 
         .workout-content {
@@ -140,21 +194,9 @@
             margin: 15px 0;
         }
 
-        .message {
-            padding: 12px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            background: #234d2c;
-            color: #9cffad;
-        }
-
-        .error {
-            padding: 12px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            background: #5a2020;
-            color: #ffb3b3;
-        }
+        /* -------------------------------------------------
+           GYM INFORMATION
+        ------------------------------------------------- */
 
         .gym-info {
             background: #222;
@@ -164,16 +206,139 @@
             margin-top: 20px;
         }
 
-        .gym-info h3 {
-            color: #d4af37;
-            margin-top: 0;
-        }
-
         .gym-info p {
             margin: 8px 0;
         }
 
-        @media (max-width: 800px) {
+        /* -------------------------------------------------
+           CLIENT TABLE
+        ------------------------------------------------- */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #111;
+        }
+
+        th,
+        td {
+            border: 1px solid #444;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #d4af37;
+            color: black;
+        }
+
+        tr:nth-child(even) {
+            background: #222;
+        }
+
+        /* -------------------------------------------------
+           PROGRESS CHART
+        ------------------------------------------------- */
+
+        .chart-container {
+            margin-top: 25px;
+            background: #111;
+            border: 1px solid #555;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .progress-item {
+            margin-bottom: 18px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 25px;
+            background: #333;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        /*
+           The exact width is represented using CSS classes.
+           No Jinja expression is placed inside a CSS property.
+        */
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .progress-0 {
+            width: 0%;
+        }
+
+        .progress-10 {
+            width: 10%;
+        }
+
+        .progress-20 {
+            width: 20%;
+        }
+
+        .progress-30 {
+            width: 30%;
+        }
+
+        .progress-40 {
+            width: 40%;
+        }
+
+        .progress-50 {
+            width: 50%;
+        }
+
+        .progress-60 {
+            width: 60%;
+        }
+
+        .progress-70 {
+            width: 70%;
+        }
+
+        .progress-80 {
+            width: 80%;
+        }
+
+        .progress-90 {
+            width: 90%;
+        }
+
+        .progress-100 {
+            width: 100%;
+        }
+
+        .progress-fill {
+            background: #d4af37;
+        }
+
+        .empty-state {
+            color: #aaa;
+            padding: 15px 0;
+        }
+
+        /* -------------------------------------------------
+           MOBILE
+        ------------------------------------------------- */
+
+        @media (max-width: 900px) {
+
             .container {
                 flex-direction: column;
             }
@@ -181,39 +346,82 @@
             .left-panel {
                 width: 100%;
             }
+
         }
+
     </style>
+
 </head>
+
 
 <body>
 
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
 <header>
-    <h1>ACEest FUNCTIONAL FITNESS SYSTEM</h1>
+
+    <h1>
+        ACEest FUNCTIONAL FITNESS SYSTEM v2
+    </h1>
+
 </header>
+
+
+<!-- =====================================================
+     MAIN CONTAINER
+===================================================== -->
 
 <div class="container">
 
-    <!-- CLIENT PROFILE -->
+
+    <!-- =================================================
+         LEFT PANEL
+    ================================================== -->
+
     <div class="left-panel">
 
-        <h2>Client Profile</h2>
+        <h2>
+            Client Profile
+        </h2>
+
+
+        <!-- SUCCESS MESSAGE -->
 
         {% if message %}
+
             <div class="message">
                 {{ message }}
             </div>
+
         {% endif %}
 
+
+        <!-- ERROR MESSAGE -->
+
         {% if error %}
+
             <div class="error">
                 {{ error }}
             </div>
+
         {% endif %}
+
+
+        <!-- CLIENT FORM -->
 
         <form method="POST">
 
+
+            <!-- NAME -->
+
             <div class="form-group">
-                <label for="name">Name</label>
+
+                <label for="name">
+                    Name
+                </label>
 
                 <input
                     type="text"
@@ -221,10 +429,17 @@
                     name="name"
                     value="{{ name }}"
                 >
+
             </div>
 
+
+            <!-- AGE -->
+
             <div class="form-group">
-                <label for="age">Age</label>
+
+                <label for="age">
+                    Age
+                </label>
 
                 <input
                     type="number"
@@ -233,10 +448,17 @@
                     min="0"
                     value="{{ age }}"
                 >
+
             </div>
 
+
+            <!-- WEIGHT -->
+
             <div class="form-group">
-                <label for="weight">Weight (kg)</label>
+
+                <label for="weight">
+                    Weight (kg)
+                </label>
 
                 <input
                     type="number"
@@ -246,37 +468,71 @@
                     step="0.1"
                     value="{{ weight }}"
                 >
+
             </div>
 
+
+            <!-- PROGRAM -->
+
             <div class="form-group">
-                <label for="program">Program</label>
 
-                <select id="program" name="program">
-                    <option value="">-- Select Program --</option>
+                <label for="program">
+                    Program
+                </label>
 
-                    {% for program_name in [
-                        "Fat Loss (FL)",
-                        "Muscle Gain (MG)",
-                        "Beginner (BG)"
-                    ] %}
+                <select
+                    id="program"
+                    name="program"
+                >
 
-                        <option
-                            value="{{ program_name }}"
-                            {% if selected_program == program_name %}
-                                selected
-                            {% endif %}
-                        >
-                            {{ program_name }}
-                        </option>
+                    <option value="">
+                        -- Select Program --
+                    </option>
 
-                    {% endfor %}
+                    <option
+                        value="Fat Loss (FL)"
+                        {% if selected_program == "Fat Loss (FL)" %}
+                            selected
+                        {% endif %}
+                    >
+                        Fat Loss (FL)
+                    </option>
+
+                    <option
+                        value="Muscle Gain (MG)"
+                        {% if selected_program == "Muscle Gain (MG)" %}
+                            selected
+                        {% endif %}
+                    >
+                        Muscle Gain (MG)
+                    </option>
+
+                    <option
+                        value="Beginner (BG)"
+                        {% if selected_program == "Beginner (BG)" %}
+                            selected
+                        {% endif %}
+                    >
+                        Beginner (BG)
+                    </option>
+
                 </select>
+
             </div>
 
+
+            <!-- ADHERENCE -->
+
             <div class="form-group">
+
                 <label for="adherence">
+
                     Weekly Adherence:
-                    {{ adherence }}%
+
+                    <span id="adherence-value">
+                        {{ adherence }}%
+                    </span>
+
                 </label>
 
                 <input
@@ -287,13 +543,30 @@
                     max="100"
                     step="1"
                     value="{{ adherence }}"
-                    oninput="document.getElementById('adherence-value').textContent = this.value + '%'"
+                    oninput="updateAdherence(this.value)"
                 >
 
-                <div id="adherence-value">
-                    {{ adherence }}%
-                </div>
             </div>
+
+
+            <!-- COACH NOTES -->
+
+            <div class="form-group">
+
+                <label for="notes">
+                    Coach Notes
+                </label>
+
+                <textarea
+                    id="notes"
+                    name="notes"
+                    placeholder="Enter coach notes..."
+                >{{ notes }}</textarea>
+
+            </div>
+
+
+            <!-- BUTTONS -->
 
             <div class="button-group">
 
@@ -305,6 +578,7 @@
                     View Program
                 </button>
 
+
                 <button
                     type="submit"
                     name="action"
@@ -312,6 +586,7 @@
                 >
                     Save Client
                 </button>
+
 
                 <button
                     type="submit"
@@ -326,9 +601,24 @@
 
         </form>
 
+
+        <!-- EXPORT -->
+
+        <a
+            href="/export"
+            class="export-button"
+        >
+            Export CSV
+        </a>
+
+
+        <!-- GYM INFORMATION -->
+
         <div class="gym-info">
 
-            <h3>Gym Information</h3>
+            <h3>
+                Gym Information
+            </h3>
 
             <p>
                 <strong>Capacity:</strong>
@@ -350,33 +640,33 @@
     </div>
 
 
-    <!-- PROGRAM DETAILS -->
+    <!-- =================================================
+         RIGHT PANEL
+    ================================================== -->
+
     <div class="right-panel">
+
+
+        <!-- WEEKLY TRAINING -->
 
         <div class="content-box">
 
-            <h3>Weekly Training Plan</h3>
+            <h3>
+                Weekly Training Plan
+            </h3>
+
 
             {% if selected_data %}
 
                 <div
-                    class="
-                    workout-content
-                    {% if selected_program == 'Fat Loss (FL)' %}
-                        fat-loss
-                    {% elif selected_program == 'Muscle Gain (MG)' %}
-                        muscle-gain
-                    {% elif selected_program == 'Beginner (BG)' %}
-                        beginner
-                    {% endif %}
-                    "
+                    class="{{ selected_data.color_class }} workout-content"
                 >
                     {{ selected_data.workout }}
                 </div>
 
             {% else %}
 
-                <div class="workout-content">
+                <div class="empty-state">
                     Select a program to view the weekly training plan.
                 </div>
 
@@ -385,9 +675,14 @@
         </div>
 
 
+        <!-- NUTRITION -->
+
         <div class="content-box">
 
-            <h3>Nutrition Plan (TN Context)</h3>
+            <h3>
+                Nutrition Plan
+            </h3>
+
 
             {% if selected_data %}
 
@@ -397,7 +692,7 @@
 
             {% else %}
 
-                <div class="workout-content">
+                <div class="empty-state">
                     Select a program to view the nutrition plan.
                 </div>
 
@@ -405,6 +700,8 @@
 
         </div>
 
+
+        <!-- CALORIES -->
 
         <div class="calories">
 
@@ -421,9 +718,210 @@
 
         </div>
 
+
+        <!-- =================================================
+             CLIENT LIST
+        ================================================== -->
+
+        <div class="content-box">
+
+            <h3>
+                Client List
+            </h3>
+
+
+            {% if clients %}
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Weight</th>
+                                <th>Program</th>
+                                <th>Adherence</th>
+                                <th>Notes</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for client in clients %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ client.name }}
+                                    </td>
+
+                                    <td>
+                                        {{ client.age }}
+                                    </td>
+
+                                    <td>
+                                        {{ client.weight }}
+                                    </td>
+
+                                    <td>
+                                        {{ client.program }}
+                                    </td>
+
+                                    <td>
+                                        {{ client.adherence }}%
+                                    </td>
+
+                                    <td>
+                                        {{ client.notes }}
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+                    No clients saved yet.
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =================================================
+             PROGRESS CHART
+        ================================================== -->
+
+        <div class="chart-container">
+
+            <h3>
+                Progress Chart
+            </h3>
+
+
+            {% if clients %}
+
+                {% for client in clients %}
+
+                    <div class="progress-item">
+
+                        <div class="progress-header">
+
+                            <span>
+                                {{ client.name }}
+                            </span>
+
+                            <span>
+                                {{ client.adherence }}%
+                            </span>
+
+                        </div>
+
+
+                        <div class="progress-track">
+
+                            {% set adherence_value = client.adherence|int %}
+
+                            {% if adherence_value >= 95 %}
+
+                                <div class="progress-fill progress-100"></div>
+
+                            {% elif adherence_value >= 85 %}
+
+                                <div class="progress-fill progress-90"></div>
+
+                            {% elif adherence_value >= 75 %}
+
+                                <div class="progress-fill progress-80"></div>
+
+                            {% elif adherence_value >= 65 %}
+
+                                <div class="progress-fill progress-70"></div>
+
+                            {% elif adherence_value >= 55 %}
+
+                                <div class="progress-fill progress-60"></div>
+
+                            {% elif adherence_value >= 45 %}
+
+                                <div class="progress-fill progress-50"></div>
+
+                            {% elif adherence_value >= 35 %}
+
+                                <div class="progress-fill progress-40"></div>
+
+                            {% elif adherence_value >= 25 %}
+
+                                <div class="progress-fill progress-30"></div>
+
+                            {% elif adherence_value >= 15 %}
+
+                                <div class="progress-fill progress-20"></div>
+
+                            {% elif adherence_value > 0 %}
+
+                                <div class="progress-fill progress-10"></div>
+
+                            {% else %}
+
+                                <div class="progress-fill progress-0"></div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="empty-state">
+                    Save clients to display the progress chart.
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
     </div>
 
 </div>
 
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+    function updateAdherence(value) {
+
+        document.getElementById(
+            "adherence-value"
+        ).textContent = value + "%";
+
+    }
+
+</script>
+
+
 </body>
+
 </html>

@@ -1,64 +1,42 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Response
+import csv
+import io
 
 app = Flask(__name__)
 
 
+# ---------------------------------------------------------
+# FITNESS PROGRAMS
+# ---------------------------------------------------------
+
 PROGRAMS = {
     "Fat Loss (FL)": {
-        "workout": (
-            "Mon: Back Squat 5x5 + Core\n"
-            "Tue: EMOM 20min Assault Bike\n"
-            "Wed: Bench Press + 21-15-9\n"
-            "Thu: Deadlift + Box Jumps\n"
-            "Fri: Zone 2 Cardio 30min"
-        ),
-        "diet": (
-            "Breakfast: Egg Whites + Oats\n"
-            "Lunch: Grilled Chicken + Brown Rice\n"
-            "Dinner: Fish Curry + Millet Roti\n"
-            "Target: ~2000 kcal"
-        ),
-        "color": "#e74c3c",
+        "workout": "Back Squat, Cardio, Bench, Deadlift, Recovery",
+        "diet": "Egg Whites, Chicken, Fish Curry",
+        "color_class": "fat-loss",
         "calorie_factor": 22
     },
+
     "Muscle Gain (MG)": {
-        "workout": (
-            "Mon: Squat 5x5\n"
-            "Tue: Bench 5x5\n"
-            "Wed: Deadlift 4x6\n"
-            "Thu: Front Squat 4x8\n"
-            "Fri: Incline Press 4x10\n"
-            "Sat: Barbell Rows 4x10"
-        ),
-        "diet": (
-            "Breakfast: Eggs + Peanut Butter Oats\n"
-            "Lunch: Chicken Biryani\n"
-            "Dinner: Mutton Curry + Rice\n"
-            "Target: ~3200 kcal"
-        ),
-        "color": "#2ecc71",
+        "workout": "Squat, Bench, Deadlift, Press, Rows",
+        "diet": "Eggs, Biryani, Mutton Curry",
+        "color_class": "muscle-gain",
         "calorie_factor": 35
     },
+
     "Beginner (BG)": {
-        "workout": (
-            "Full Body Circuit:\n"
-            "- Air Squats\n"
-            "- Ring Rows\n"
-            "- Push-ups\n"
-            "Focus: Technique & Consistency"
-        ),
-        "diet": (
-            "Balanced Tamil Meals\n"
-            "Idli / Dosa / Rice + Dal\n"
-            "Protein Target: 120g/day"
-        ),
-        "color": "#3498db",
+        "workout": "Air Squats, Ring Rows, Push-ups",
+        "diet": "Balanced Tamil Meals",
+        "color_class": "beginner",
         "calorie_factor": 26
     }
 }
 
 
-# Gym information from v1.0
+# ---------------------------------------------------------
+# GYM INFORMATION
+# ---------------------------------------------------------
+
 GYM_INFO = {
     "capacity": 150,
     "area": "10,000 sq ft",
@@ -66,81 +44,200 @@ GYM_INFO = {
 }
 
 
+# ---------------------------------------------------------
+# CLIENT STORAGE
+# ---------------------------------------------------------
+
+clients = []
+
+
+# ---------------------------------------------------------
+# HOME PAGE
+# ---------------------------------------------------------
+
 @app.route("/", methods=["GET", "POST"])
 def index():
+
     name = ""
     age = ""
     weight = ""
-    adherence = 0
     selected_program = ""
+    adherence = 0
+    notes = ""
+
     selected_data = None
     calories = None
     message = ""
     error = ""
 
     if request.method == "POST":
+
         action = request.form.get("action", "")
 
+        # -------------------------------------------------
+        # RESET
+        # -------------------------------------------------
+
         if action == "reset":
+
             return render_template(
                 "index.html",
                 name="",
                 age="",
                 weight="",
-                adherence=0,
                 selected_program="",
+                adherence=0,
+                notes="",
                 selected_data=None,
                 calories=None,
                 message="",
                 error="",
+                clients=clients,
                 gym_info=GYM_INFO
             )
+
+        # -------------------------------------------------
+        # READ FORM DATA
+        # -------------------------------------------------
 
         name = request.form.get("name", "").strip()
         age = request.form.get("age", "").strip()
         weight = request.form.get("weight", "").strip()
         selected_program = request.form.get("program", "")
         adherence = request.form.get("adherence", "0")
+        notes = request.form.get("notes", "").strip()
 
         selected_data = PROGRAMS.get(selected_program)
 
-        # Calculate estimated calories when a valid weight
-        # and program are provided.
+        # -------------------------------------------------
+        # CALCULATE ESTIMATED CALORIES
+        # -------------------------------------------------
+
         if selected_data and weight:
+
             try:
+
                 weight_value = float(weight)
 
                 if weight_value > 0:
+
                     calories = int(
-                        weight_value * selected_data["calorie_factor"]
+                        weight_value
+                        * selected_data["calorie_factor"]
                     )
 
             except ValueError:
+
                 error = "Please enter a valid weight."
 
+        # -------------------------------------------------
+        # SAVE CLIENT
+        # -------------------------------------------------
+
         if action == "save":
+
             if not name or not selected_program:
+
                 error = "Please fill client name and program."
-            else:
+
+            elif not error:
+
+                client = {
+                    "name": name,
+                    "age": age,
+                    "weight": weight,
+                    "program": selected_program,
+                    "adherence": adherence,
+                    "notes": notes
+                }
+
+                clients.append(client)
+
                 message = (
-                    f"Client {name} saved successfully. "
-                    f"Adherence: {adherence}%"
+                    f"Client {name} saved successfully."
                 )
+
+        # -------------------------------------------------
+        # VIEW PROGRAM
+        # -------------------------------------------------
+
+        elif action == "view":
+
+            if not selected_program:
+
+                error = "Please select a program."
 
     return render_template(
         "index.html",
         name=name,
         age=age,
         weight=weight,
-        adherence=adherence,
         selected_program=selected_program,
+        adherence=adherence,
+        notes=notes,
         selected_data=selected_data,
         calories=calories,
         message=message,
         error=error,
+        clients=clients,
         gym_info=GYM_INFO
     )
 
+
+# ---------------------------------------------------------
+# EXPORT CLIENT DATA TO CSV
+# ---------------------------------------------------------
+
+@app.route("/export")
+def export_csv():
+
+    if not clients:
+
+        return (
+            "No clients to export. "
+            "Please save at least one client first.",
+            400
+        )
+
+    output = io.StringIO()
+
+    writer = csv.writer(output)
+
+    writer.writerow([
+        "Name",
+        "Age",
+        "Weight",
+        "Program",
+        "Adherence",
+        "Notes"
+    ])
+
+    for client in clients:
+
+        writer.writerow([
+            client["name"],
+            client["age"],
+            client["weight"],
+            client["program"],
+            client["adherence"],
+            client["notes"]
+        ])
+
+    response = Response(
+        output.getvalue(),
+        mimetype="text/csv"
+    )
+
+    response.headers["Content-Disposition"] = (
+        "attachment; filename=aceest_clients.csv"
+    )
+
+    return response
+
+
+# ---------------------------------------------------------
+# RUN APPLICATION
+# ---------------------------------------------------------
 
 if __name__ == "__main__":
     app.run(debug=True)
