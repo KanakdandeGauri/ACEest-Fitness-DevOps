@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ACEest Fitness and Gym</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .header {
+            background: #d4af37;
+            color: black;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 30px;
+        }
+
+        .main-container {
+            display: flex;
+            gap: 25px;
+            padding: 30px;
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .left-panel {
+            width: 280px;
+            background: #1a1a1a;
+            border: 1px solid #d4af37;
+            padding: 20px;
+        }
+
+        .left-panel h2 {
+            color: #d4af37;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #d4af37;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .metrics {
+            background: #333;
+            color: #ddd;
+            padding: 15px;
+            margin-top: 30px;
+        }
+
+        .right-panel {
+            flex: 1;
+        }
+
+        .card {
+            border: 1px solid #d4af37;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            color: #d4af37;
+        }
+
+        .content {
+            white-space: pre-line;
+            line-height: 1.7;
+        }
+
+        .selected-title {
+            color: #d4af37;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>ACEest FUNCTIONAL FITNESS</h1>
+    </div>
+
+    <div class="main-container">
+
+        <div class="left-panel">
+
+            <h2>Client Profile</h2>
+
+            <form method="POST">
+
+                <label for="program">Select Program:</label>
+
+                <select name="program" id="program" required>
+                    <option value="">-- Select Program --</option>
+
+                    {% for program in programs %}
+                        <option value="{{ program }}"
+                            {% if selected_program == program %}selected{% endif %}>
+                            {{ program }}
+                        </option>
+                    {% endfor %}
+
+                </select>
+
+                <button type="submit">View Program</button>
+
+            </form>
+
+            <div class="metrics">
+                <strong>GYM METRICS</strong>
+                <br><br>
+                CAPACITY: 150 Users
+                <br>
+                AREA: 10,000 sq ft
+                <br>
+                BREAK-EVEN: 250 Members
+            </div>
+
+        </div>
+
+
+        <div class="right-panel">
+
+            {% if selected_data %}
+
+                <div class="card">
+                    <h2 class="selected-title">
+                        Weekly Workout Chart
+                    </h2>
+
+                    <div class="content">
+                        {{ selected_data.workout }}
+                    </div>
+                </div>
+
+
+                <div class="card">
+                    <h2>Daily Nutrition Plan (Tamil Nadu Context)</h2>
+
+                    <div class="content">
+                        {{ selected_data.diet }}
+                    </div>
+                </div>
+
+            {% else %}
+
+                <div class="card">
+                    <h2>Weekly Workout Chart</h2>
+                    <p>Select a profile to view workout.</p>
+                </div>
+
+                <div class="card">
+                    <h2>Daily Nutrition Plan (Tamil Nadu Context)</h2>
+                    <p>Select a profile to view diet.</p>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</body>
+</html>
