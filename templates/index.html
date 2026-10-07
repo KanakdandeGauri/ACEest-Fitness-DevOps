@@ -1,1844 +1,524 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>ACEest Functional Fitness System</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACEest Fitness &amp; Performance - v{{ app_version }}</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
+        * { box-sizing: border-box; }
         body {
             margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: #111111;
-            color: #f5f5f5;
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: #eee;
         }
-
-        .container {
-            width: 94%;
-            max-width: 1300px;
-            margin: 25px auto;
-        }
-
         header {
             background: #d4af37;
-            color: #000000;
-            padding: 25px;
-            text-align: center;
-            border-radius: 12px;
-            margin-bottom: 25px;
+            color: #111;
+            padding: 18px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
         }
-
-        header h1 {
-            margin: 0;
-            font-size: 34px;
+        header h1 { margin: 0; font-size: 28px; }
+        .header-right { text-align: right; }
+        .version { font-weight: bold; margin-bottom: 5px; }
+        .user-info { font-size: 14px; }
+        .container { max-width: 1500px; margin: auto; padding: 20px; }
+        .flash {
+            padding: 12px 15px;
+            border-radius: 7px;
+            margin-bottom: 15px;
         }
-
-        header p {
-            margin: 8px 0 0;
-            font-size: 15px;
+        .flash.success { background: #163d24; border: 1px solid #2d8a4d; }
+        .flash.error { background: #4a1919; border: 1px solid #b94a48; }
+        .grid {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 18px;
         }
-
         .card {
-            background: #1c1c1c;
-            border: 1px solid #333333;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 25px;
+            background: #1b1b1b;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 18px;
         }
-
-        .card h2 {
+        .card h2, .card h3 {
             color: #d4af37;
             margin-top: 0;
         }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .full {
-            grid-column: 1 / -1;
-        }
-
         label {
-            margin-bottom: 7px;
-            color: #dddddd;
-            font-weight: bold;
-        }
-
-        input,
-        select,
-        textarea {
-            padding: 11px;
-            border-radius: 6px;
-            border: 1px solid #444444;
-            background: #292929;
-            color: white;
+            display: block;
+            margin: 9px 0 5px;
             font-size: 14px;
         }
-
-        textarea {
-            resize: vertical;
-            min-height: 80px;
+        input, select, textarea, button {
+            width: 100%;
+            padding: 9px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background: #292929;
+            color: #fff;
         }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #d4af37;
-        }
-
-        input[type="range"] {
-            padding: 0;
-            accent-color: #d4af37;
-        }
-
-        .adherence-row {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .adherence-row input {
-            flex: 1;
-        }
-
-        #adherenceValue {
-            color: #d4af37;
-            font-weight: bold;
-            min-width: 55px;
-        }
-
-        .button-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        button {
-            padding: 11px 17px;
-            border: none;
-            border-radius: 6px;
+        textarea { resize: vertical; min-height: 70px; }
+        button, .button {
             background: #d4af37;
-            color: #111111;
+            color: #111;
+            border: none;
             font-weight: bold;
             cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
         }
-
-        button:hover {
-            background: #f0c94b;
+        button:hover, .button:hover { background: #f0ca4d; }
+        .secondary { background: #444; color: #fff; }
+        .danger { background: #8b3030; color: #fff; }
+        .button-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
         }
-
-        button.secondary {
-            background: #444444;
-            color: #ffffff;
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
-
-        button.secondary:hover {
-            background: #555555;
+        .three-col {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
         }
-
-        .flash {
-            padding: 13px 16px;
-            margin-bottom: 15px;
-            border-radius: 7px;
-            font-weight: bold;
-        }
-
-        .flash.success {
-            background: #173d24;
-            border: 1px solid #2e7d4a;
-            color: #8ee6a9;
-        }
-
-        .flash.error {
-            background: #451c1c;
-            border: 1px solid #8b3333;
-            color: #ff9999;
-        }
-
-        .program-grid {
+        .stat-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
+            gap: 10px;
         }
-
-        .program-card {
-            background: #252525;
-            border: 1px solid #3d3d3d;
-            border-radius: 10px;
-            padding: 18px;
-        }
-
-        .program-card h3 {
-            color: #d4af37;
-            font-size: 17px;
-        }
-
-        .program-card p {
-            color: #cccccc;
-            line-height: 1.5;
-        }
-
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-        }
-
-        .summary-item {
-            background: #252525;
-            border: 1px solid #3d3d3d;
+        .stat {
+            background: #242424;
             border-radius: 8px;
-            padding: 15px;
+            padding: 13px;
         }
-
-        .summary-item strong {
+        .stat strong {
             display: block;
-            color: #999999;
-            font-size: 12px;
-            margin-bottom: 6px;
+            font-size: 21px;
+            color: #d4af37;
+            margin-top: 4px;
         }
-
-        .summary-item span {
-            color: white;
-            font-weight: bold;
-        }
-
-        .table-container {
-            overflow-x: auto;
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 10px;
         }
-
-        th,
-        td {
-            padding: 11px;
-            border-bottom: 1px solid #333333;
+        th, td {
+            border-bottom: 1px solid #333;
+            padding: 9px;
             text-align: left;
         }
-
-        th {
-            color: #d4af37;
-            background: #252525;
-        }
-
-        td {
-            color: #dddddd;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 18px;
-            background: #333333;
-            border-radius: 10px;
+        th { color: #d4af37; }
+        .progress-track {
+            height: 12px;
+            background: #333;
+            border-radius: 20px;
             overflow: hidden;
-            margin-bottom: 4px;
         }
-
         .progress-fill {
             height: 100%;
-            width: 0;
             background: #d4af37;
-            border-radius: 10px;
+            width: 0%;
         }
-
-        .chart-container {
-            height: 400px;
-            position: relative;
+        .chart-box { height: 330px; position: relative; }
+        .small { color: #aaa; font-size: 13px; }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background: #333;
+            font-size: 12px;
         }
-
-        .bmi-box {
-            background: #252525;
-            border: 1px solid #3d3d3d;
-            border-radius: 10px;
-            padding: 20px;
+        .expiry-warning { color: #ffb3b3; }
+        .empty {
+            color: #999;
+            padding: 15px 0;
         }
-
-        .bmi-value {
-            color: #d4af37;
-            font-size: 32px;
-            font-weight: bold;
+        .program-card {
+            border: 1px solid #333;
+            border-radius: 7px;
+            padding: 10px;
+            margin-bottom: 8px;
         }
-
-        .bmi-category {
-            font-size: 20px;
-            font-weight: bold;
-            margin-top: 8px;
+        @media (max-width: 1050px) {
+            .grid { grid-template-columns: 1fr; }
+            .stat-grid { grid-template-columns: 1fr 1fr; }
         }
-
-        .empty-message {
-            color: #888888;
-            text-align: center;
-            padding: 20px;
-        }
-
-        footer {
-            text-align: center;
-            color: #777777;
-            padding: 20px;
-        }
-
-        @media (max-width: 1000px) {
-
-            .form-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .program-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .summary-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
         @media (max-width: 650px) {
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .program-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .summary-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            button {
-                width: 100%;
-            }
+            .two-col, .three-col, .stat-grid { grid-template-columns: 1fr; }
+            header { align-items: flex-start; flex-direction: column; }
+            .header-right { text-align: left; }
         }
-
     </style>
-
 </head>
-
-
 <body>
+<header>
+    <div>
+        <h1>ACEest Functional Fitness System</h1>
+        <div>Client Management &amp; Performance Dashboard</div>
+    </div>
+    <div class="header-right">
+        <div class="version">Version {{ app_version }}</div>
+        <div class="user-info">{{ username }} ({{ role }}) · <a href="{{ url_for('logout') }}" style="color:#111;">Logout</a></div>
+    </div>
+</header>
 
 <div class="container">
-
-
-    <header>
-        <h1>ACEest Fitness &amp; Performance</h1>
-
-        <p class="version">Version {{ app_version }}</p>
-
-        <p>
-            Client Management, Goals, Workouts,
-            Body Metrics &amp; Analytics
-        </p>
-        
-    </header>
-
-
-    <!-- FLASH MESSAGES -->
-
     {% with messages = get_flashed_messages(with_categories=true) %}
-
-        {% if messages %}
-
-            {% for category, message in messages %}
-
-                <div class="flash {{ category }}">
-                    {{ message }}
-                </div>
-
-            {% endfor %}
-
-        {% endif %}
-
+        {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
     {% endwith %}
 
-
-    <!-- CLIENT MANAGEMENT -->
-
-    <div class="card">
-
-        <h2>
-            Client Management
-        </h2>
-
-        <form method="POST">
-
-            <div class="form-grid">
-
-
-                <div class="form-group">
-
-                    <label for="name">
-                        Client Name
-                    </label>
-
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value="{{ form_data.name }}"
-                        placeholder="Enter client name"
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="age">
-                        Age
-                    </label>
-
-                    <input
-                        type="number"
-                        id="age"
-                        name="age"
-                        value="{{ form_data.age }}"
-                        min="1"
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="height">
-                        Height (cm)
-                    </label>
-
-                    <input
-                        type="number"
-                        id="height"
-                        name="height"
-                        value="{{ form_data.height }}"
-                        min="1"
-                        step="0.1"
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="weight">
-                        Weight (kg)
-                    </label>
-
-                    <input
-                        type="number"
-                        id="weight"
-                        name="weight"
-                        value="{{ form_data.weight }}"
-                        min="1"
-                        step="0.1"
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="program">
-                        Program
-                    </label>
-
-                    <select
-                        id="program"
-                        name="program"
-                    >
-
-                        <option value="">
-                            Select a program
-                        </option>
-
-                        {% for name, program in programs.items() %}
-
-                            <option
-                                value="{{ name }}"
-                                {% if form_data.program == name %}
-                                    selected
-                                {% endif %}
-                            >
-                                {{ name }}
+    <div class="grid">
+        <aside>
+            <div class="card">
+                <h2>Client Management</h2>
+                <form method="post">
+                    <input type="hidden" name="action" value="load">
+                    <label for="client_name">Select Client</label>
+                    <select id="client_name" name="client_name" onchange="this.form.submit()">
+                        <option value="">-- Select client --</option>
+                        {% for item in clients %}
+                            <option value="{{ item['name'] }}" {% if client and item['name'] == client['name'] %}selected{% endif %}>
+                                {{ item['name'] }}
                             </option>
-
                         {% endfor %}
-
                     </select>
+                </form>
 
-                </div>
+                <form method="post">
+                    <input type="hidden" name="action" value="save">
+                    <label>Name</label>
+                    <input name="name" value="{{ client['name'] if client else '' }}" required>
 
-
-                <div class="form-group">
-
-                    <label for="target_weight">
-                        Target Weight (kg)
-                    </label>
-
-                    <input
-                        type="number"
-                        id="target_weight"
-                        name="target_weight"
-                        value="{{ form_data.target_weight }}"
-                        min="1"
-                        step="0.1"
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="target_adherence">
-                        Target Adherence (%)
-                    </label>
-
-                    <input
-                        type="number"
-                        id="target_adherence"
-                        name="target_adherence"
-                        value="{{ form_data.target_adherence }}"
-                        min="0"
-                        max="100"
-                    >
-
-                </div>
-
-
-                <div class="form-group full">
-
-                    <label for="adherence">
-                        Weekly Adherence
-                    </label>
-
-                    <div class="adherence-row">
-
-                        <input
-                            type="range"
-                            id="adherence"
-                            name="adherence"
-                            min="0"
-                            max="100"
-                            value="{{ form_data.adherence }}"
-                            oninput="updateAdherence(this.value)"
-                        >
-
-                        <span id="adherenceValue">
-                            {{ form_data.adherence }}%
-                        </span>
-
+                    <div class="two-col">
+                        <div>
+                            <label>Age</label>
+                            <input type="number" name="age" value="{{ client['age'] if client else '' }}" min="1">
+                        </div>
+                        <div>
+                            <label>Height (cm)</label>
+                            <input type="number" step="0.1" name="height" value="{{ client['height'] if client else '' }}" min="0">
+                        </div>
                     </div>
 
-                </div>
-
-            </div>
-
-
-            <div class="button-group">
-
-                <button
-                    type="submit"
-                    name="action"
-                    value="save"
-                >
-                    Save Client
-                </button>
-
-                <button
-                    type="submit"
-                    name="action"
-                    value="load"
-                    class="secondary"
-                >
-                    Load Client
-                </button>
-
-                <button
-                    type="submit"
-                    name="action"
-                    value="progress"
-                >
-                    Save Weekly Progress
-                </button>
-
-                <button
-                    type="submit"
-                    name="action"
-                    value="chart"
-                >
-                    Adherence Chart
-                </button>
-
-                <button
-                    type="submit"
-                    name="action"
-                    value="weight_chart"
-                >
-                    Weight Trend
-                </button>
-
-                <button
-                    type="submit"
-                    name="action"
-                    value="bmi"
-                >
-                    BMI & Risk
-                </button>
-
-                <button
-                    type="submit"
-                    name="action"
-                    value="history"
-                >
-                    Workout History
-                </button>
-
-                <button
-                    type="submit"
-                    name="action"
-                    value="view"
-                >
-                    View Summary
-                </button>
-
-                <button
-                    type="submit"
-                    name="action"
-                    value="reset"
-                    class="secondary"
-                >
-                    Reset
-                </button>
-
-            </div>
-
-        </form>
-
-    </div>
-
-
-    <!-- AVAILABLE PROGRAMS -->
-
-    <div class="card">
-
-        <h2>
-            Available Programs
-        </h2>
-
-        <div class="program-grid">
-
-            {% for name, program in programs.items() %}
-
-                <div class="program-card">
-
-                    <h3>
-                        {{ name }}
-                    </h3>
-
-                    <p>
-                        {{ program.description }}
-                    </p>
-
-                    <p>
-                        <strong>
-                            Calorie Factor:
-                        </strong>
-
-                        {{ program.factor }}
-                    </p>
-
-                </div>
-
-            {% endfor %}
-
-        </div>
-
-    </div>
-
-
-    <!-- CLIENT SUMMARY -->
-
-    {% if summary %}
-
-        <div class="card">
-
-            <h2>
-                Client Summary
-            </h2>
-
-            <div class="summary-grid">
-
-                <div class="summary-item">
-                    <strong>Name</strong>
-                    <span>
-                        {{ summary.name }}
-                    </span>
-                </div>
-
-                <div class="summary-item">
-                    <strong>Age</strong>
-                    <span>
-                        {{ summary.age }}
-                    </span>
-                </div>
-
-                <div class="summary-item">
-                    <strong>Height</strong>
-                    <span>
-                        {{ summary.height }} cm
-                    </span>
-                </div>
-
-                <div class="summary-item">
-                    <strong>Weight</strong>
-                    <span>
-                        {{ summary.weight }} kg
-                    </span>
-                </div>
-
-                <div class="summary-item">
-                    <strong>Program</strong>
-                    <span>
-                        {{ summary.program }}
-                    </span>
-                </div>
-
-                <div class="summary-item">
-                    <strong>Calories</strong>
-                    <span>
-                        {% if summary.calories %}
-                            {{ summary.calories }} kcal/day
-                        {% else %}
-                            N/A
-                        {% endif %}
-                    </span>
-                </div>
-
-                <div class="summary-item">
-                    <strong>Target Weight</strong>
-                    <span>
-                        {{ summary.target_weight or "N/A" }}
-                    </span>
-                </div>
-
-                <div class="summary-item">
-                    <strong>Target Adherence</strong>
-                    <span>
-                        {{ summary.target_adherence or "N/A" }}
-                    </span>
-                </div>
-
-            </div>
-
-        </div>
-
-    {% endif %}
-
-
-    <!-- SELECTED CLIENT -->
-
-    {% if selected_client %}
-
-        <div class="card">
-
-            <h2>
-                Selected Client
-            </h2>
-
-            <div class="summary-grid">
-
-                <div class="summary-item">
-                    <strong>Name</strong>
-                    <span>
-                        {{ selected_client["name"] }}
-                    </span>
-                </div>
-
-                <div class="summary-item">
-                    <strong>Age</strong>
-                    <span>
-                        {{ selected_client["age"] or "N/A" }}
-                    </span>
-                </div>
-
-                <div class="summary-item">
-                    <strong>Height</strong>
-                    <span>
-                        {{ selected_client["height"] or "N/A" }} cm
-                    </span>
-                </div>
-
-                <div class="summary-item">
-                    <strong>Weight</strong>
-                    <span>
-                        {{ selected_client["weight"] or "N/A" }} kg
-                    </span>
-                </div>
-
-                <div class="summary-item">
-                    <strong>Program</strong>
-                    <span>
-                        {{ selected_client["program"] }}
-                    </span>
-                </div>
-
-                <div class="summary-item">
-                    <strong>Calories</strong>
-                    <span>
-                        {{ selected_client["calories"] or "N/A" }}
-                    </span>
-                </div>
-
-                <div class="summary-item">
-                    <strong>Target Weight</strong>
-                    <span>
-                        {{ selected_client["target_weight"] or "N/A" }}
-                    </span>
-                </div>
-
-                <div class="summary-item">
-                    <strong>Target Adherence</strong>
-                    <span>
-                        {{ selected_client["target_adherence"] or "N/A" }}%
-                    </span>
-                </div>
-
-            </div>
-
-        </div>
-
-    {% endif %}
-
-
-    <!-- BMI -->
-
-    {% if bmi_info %}
-
-        <div class="card">
-
-            <h2>
-                BMI & Risk Information
-            </h2>
-
-            <div class="bmi-box">
-
-                <div>
-                    BMI for {{ bmi_info.name }}
-                </div>
-
-                <div class="bmi-value">
-                    {{ bmi_info.value }}
-                </div>
-
-                <div class="bmi-category">
-                    {{ bmi_info.category }}
-                </div>
-
-                <p>
-                    <strong>Risk note:</strong>
-                    {{ bmi_info.risk }}
-                </p>
-
-            </div>
-
-        </div>
-
-    {% endif %}
-
-
-    <!-- ADHERENCE CHART -->
-
-    {% if chart_data.weeks %}
-
-        <div class="card">
-
-            <h2>
-                Weekly Adherence Progress
-            </h2>
-
-            <div class="chart-container">
-
-                <canvas id="progressChart"></canvas>
-
-            </div>
-
-        </div>
-
-    {% endif %}
-
-
-    <!-- WEIGHT CHART -->
-
-    {% if weight_chart_data.dates %}
-
-        <div class="card">
-
-            <h2>
-                Weight Trend
-            </h2>
-
-            <div class="chart-container">
-
-                <canvas id="weightChart"></canvas>
-
-            </div>
-
-        </div>
-
-    {% endif %}
-
-
-    <!-- WORKOUT HISTORY -->
-
-    {% if workout_history %}
-
-        <div class="card">
-
-            <h2>
-                Workout History
-            </h2>
-
-            <div class="table-container">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-                            <th>Date</th>
-                            <th>Type</th>
-                            <th>Duration</th>
-                            <th>Notes</th>
-                            <th>Exercise</th>
-                            <th>Sets</th>
-                            <th>Reps</th>
-                            <th>Weight</th>
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        {% for workout in workout_history %}
-
-                            <tr>
-
-                                <td>
-                                    {{ workout["date"] }}
-                                </td>
-
-                                <td>
-                                    {{ workout["workout_type"] }}
-                                </td>
-
-                                <td>
-                                    {{ workout["duration_min"] }} min
-                                </td>
-
-                                <td>
-                                    {{ workout["notes"] or "-" }}
-                                </td>
-
-                                <td>
-                                    {{ workout["exercise_name"] or "-" }}
-                                </td>
-
-                                <td>
-                                    {{ workout["sets"] or "-" }}
-                                </td>
-
-                                <td>
-                                    {{ workout["reps"] or "-" }}
-                                </td>
-
-                                <td>
-                                    {{ workout["exercise_weight"] or "-" }}
-                                </td>
-
-                            </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
-    {% endif %}
-
-
-    <!-- LOG WORKOUT -->
-
-    <div class="card">
-
-        <h2>
-            Log Workout
-        </h2>
-
-        <form method="POST" action="/workout">
-
-            <div class="form-grid">
-
-                <div class="form-group">
-
-                    <label>
-                        Client Name
-                    </label>
-
-                    <input
-                        type="text"
-                        name="client_name"
-                        value="{{ form_data.name }}"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Date
-                    </label>
-
-                    <input
-                        type="date"
-                        name="date"
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Workout Type
-                    </label>
-
-                    <select
-                        name="workout_type"
-                        required
-                    >
-
-                        <option value="">
-                            Select workout type
-                        </option>
-
-                        {% for workout_type in workout_types %}
-
-                            <option value="{{ workout_type }}">
-                                {{ workout_type }}
+                    <div class="two-col">
+                        <div>
+                            <label>Weight (kg)</label>
+                            <input type="number" step="0.1" name="weight" value="{{ client['weight'] if client else '' }}" min="0">
+                        </div>
+                        <div>
+                            <label>Target Weight (kg)</label>
+                            <input type="number" step="0.1" name="target_weight" value="{{ client['target_weight'] if client else '' }}" min="0">
+                        </div>
+                    </div>
+
+                    <label>Program</label>
+                    <select name="program">
+                        <option value="">-- Select program --</option>
+                        {% for name, program in programs.items() %}
+                            <option value="{{ name }}" {% if client and client['program'] == name %}selected{% endif %}>
+                                {{ name }}
                             </option>
-
                         {% endfor %}
-
                     </select>
 
-                </div>
+                    <div class="two-col">
+                        <div>
+                            <label>Target Adherence (%)</label>
+                            <input type="number" name="target_adherence" value="{{ client['target_adherence'] if client else 0 }}" min="0" max="100">
+                        </div>
+                        <div>
+                            <label>Membership Expiry</label>
+                            <input type="date" name="membership_expiry" value="{{ client['membership_expiry'] if client else '' }}">
+                        </div>
+                    </div>
 
+                    <button type="submit" style="margin-top:12px;">Save Client</button>
+                </form>
 
-                <div class="form-group">
-
-                    <label>
-                        Duration (min)
-                    </label>
-
-                    <input
-                        type="number"
-                        name="duration"
-                        value="60"
-                        min="1"
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Exercise Name
-                    </label>
-
-                    <input
-                        type="text"
-                        name="exercise_name"
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Sets
-                    </label>
-
-                    <input
-                        type="number"
-                        name="sets"
-                        value="3"
-                        min="1"
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Reps
-                    </label>
-
-                    <input
-                        type="number"
-                        name="reps"
-                        value="10"
-                        min="1"
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Exercise Weight (kg)
-                    </label>
-
-                    <input
-                        type="number"
-                        name="exercise_weight"
-                        value="0"
-                        min="0"
-                        step="0.1"
-                    >
-
-                </div>
-
-
-                <div class="form-group full">
-
-                    <label>
-                        Notes
-                    </label>
-
-                    <textarea
-                        name="notes"
-                        placeholder="Workout notes..."
-                    ></textarea>
-
-                </div>
-
+                {% if client %}
+                    <div class="button-row">
+                        <form method="post">
+                            <input type="hidden" name="action" value="reset">
+                            <button class="secondary" type="submit">Reset</button>
+                        </form>
+                        <a class="button" href="{{ url_for('export_pdf', client_name=client['name']) }}">Export PDF</a>
+                    </div>
+                {% endif %}
             </div>
 
-
-            <div class="button-group">
-
-                <button type="submit">
-                    Save Workout
-                </button>
-
+            <div class="card">
+                <h3>Programs</h3>
+                {% for name, program in programs.items() %}
+                    <div class="program-card">
+                        <strong>{{ name }}</strong>
+                        <div class="small">{{ program['desc'] }} · Factor {{ program['factor'] }}</div>
+                    </div>
+                {% endfor %}
             </div>
 
-        </form>
+            <div class="card">
+                <h3>Generate AI Workout</h3>
+                <form method="post">
+                    <input type="hidden" name="action" value="generate_ai">
+                    <input type="hidden" name="client_name" value="{{ client['name'] if client else '' }}">
+                    <label>Experience</label>
+                    <select name="experience">
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                    <button type="submit" {% if not client %}disabled{% endif %}>Generate Program</button>
+                </form>
+            </div>
+        </aside>
 
-    </div>
-
-
-    <!-- LOG BODY METRICS -->
-
-    <div class="card">
-
-        <h2>
-            Log Body Metrics
-        </h2>
-
-        <form method="POST" action="/metrics">
-
-            <div class="form-grid">
-
-                <div class="form-group">
-
-                    <label>
-                        Client Name
-                    </label>
-
-                    <input
-                        type="text"
-                        name="client_name"
-                        value="{{ form_data.name }}"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Date
-                    </label>
-
-                    <input
-                        type="date"
-                        name="date"
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Weight (kg)
-                    </label>
-
-                    <input
-                        type="number"
-                        name="weight"
-                        step="0.1"
-                        min="0"
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Waist (cm)
-                    </label>
-
-                    <input
-                        type="number"
-                        name="waist"
-                        step="0.1"
-                        min="0"
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Body Fat (%)
-                    </label>
-
-                    <input
-                        type="number"
-                        name="bodyfat"
-                        step="0.1"
-                        min="0"
-                    >
-
-                </div>
-
+        <main>
+            <div class="card">
+                <h2>Client Summary</h2>
+                {% if client %}
+                    <div class="stat-grid">
+                        <div class="stat">Calories<strong>{{ client['calories'] or 'N/A' }}</strong></div>
+                        <div class="stat">BMI<strong>{{ bmi or 'N/A' }}</strong><span class="small">{{ bmi_category }}</span></div>
+                        <div class="stat">Target Weight<strong>{{ client['target_weight'] or 'N/A' }}</strong></div>
+                        <div class="stat">Target Adherence<strong>{{ client['target_adherence'] or 0 }}%</strong></div>
+                    </div>
+                    <table>
+                        <tr><th>Name</th><td>{{ client['name'] }}</td></tr>
+                        <tr><th>Age</th><td>{{ client['age'] }}</td></tr>
+                        <tr><th>Height</th><td>{{ client['height'] }} cm</td></tr>
+                        <tr><th>Weight</th><td>{{ client['weight'] }} kg</td></tr>
+                        <tr><th>Program</th><td>{{ client['program'] }}</td></tr>
+                        <tr><th>Membership Expiry</th><td>{{ client['membership_expiry'] or 'Not set' }}</td></tr>
+                    </table>
+                {% else %}
+                    <div class="empty">Select or create a client to view the dashboard.</div>
+                {% endif %}
             </div>
 
+            <div class="card">
+                <h2>Progress &amp; Analytics</h2>
+                <div class="two-col">
+                    <div>
+                        <h3>Weekly Adherence</h3>
+                        <div class="chart-box"><canvas id="adherenceChart"></canvas></div>
+                    </div>
+                    <div>
+                        <h3>Weight Trend</h3>
+                        <div class="chart-box"><canvas id="weightChart"></canvas></div>
+                    </div>
+                </div>
 
-            <div class="button-group">
-
-                <button type="submit">
-                    Save Metrics
-                </button>
-
+                {% if client %}
+                <form method="post">
+                    <input type="hidden" name="action" value="progress">
+                    <input type="hidden" name="client_name" value="{{ client['name'] }}">
+                    <div class="two-col">
+                        <div>
+                            <label>Weekly Adherence (%)</label>
+                            <input type="number" name="adherence" min="0" max="100" value="0">
+                        </div>
+                        <div style="display:flex;align-items:end;">
+                            <button type="submit">Save Weekly Progress</button>
+                        </div>
+                    </div>
+                </form>
+                {% endif %}
             </div>
 
-        </form>
-
-    </div>
-
-
-    <!-- METRICS HISTORY -->
-
-    {% if metrics %}
-
-        <div class="card">
-
-            <h2>
-                Body Metrics History
-            </h2>
-
-            <div class="table-container">
-
+            {% if generated_program %}
+            <div class="card">
+                <h2>Generated Workout Program</h2>
                 <table>
-
-                    <thead>
-
-                        <tr>
-                            <th>Date</th>
-                            <th>Weight</th>
-                            <th>Waist</th>
-                            <th>Body Fat</th>
-                        </tr>
-
-                    </thead>
-
+                    <thead><tr><th>Day</th><th>Exercise</th><th>Sets</th><th>Reps</th></tr></thead>
                     <tbody>
-
-                        {% for metric in metrics %}
-
-                            <tr>
-
-                                <td>
-                                    {{ metric["date"] }}
-                                </td>
-
-                                <td>
-                                    {{ metric["weight"] or "-" }} kg
-                                </td>
-
-                                <td>
-                                    {{ metric["waist"] or "-" }} cm
-                                </td>
-
-                                <td>
-                                    {{ metric["bodyfat"] or "-" }}%
-                                </td>
-
-                            </tr>
-
-                        {% endfor %}
-
+                    {% for item in generated_program %}
+                        <tr>
+                            <td>{{ item['day'] }}</td>
+                            <td>{{ item['exercise'] }}</td>
+                            <td>{{ item['sets'] }}</td>
+                            <td>{{ item['reps'] }}</td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
-
                 </table>
-
             </div>
+            {% endif %}
 
-        </div>
+            {% if client %}
+            <div class="card">
+                <h2>Workout Log</h2>
+                <form method="post">
+                    <input type="hidden" name="action" value="workout">
+                    <input type="hidden" name="client_name" value="{{ client['name'] }}">
+                    <div class="three-col">
+                        <div><label>Date</label><input type="date" name="workout_date" value="{{ today }}"></div>
+                        <div>
+                            <label>Workout Type</label>
+                            <select name="workout_type">
+                                <option>Strength</option>
+                                <option>Hypertrophy</option>
+                                <option>Conditioning</option>
+                                <option>Mixed</option>
+                                <option>Mobility</option>
+                            </select>
+                        </div>
+                        <div><label>Duration (min)</label><input type="number" name="duration_min" min="0"></div>
+                    </div>
+                    <div class="three-col">
+                        <div><label>Exercise</label><input name="exercise_name"></div>
+                        <div><label>Sets</label><input type="number" name="sets" min="0"></div>
+                        <div><label>Reps</label><input type="number" name="reps" min="0"></div>
+                    </div>
+                    <div class="two-col">
+                        <div><label>Weight</label><input type="number" step="0.1" name="exercise_weight" min="0"></div>
+                        <div><label>Notes</label><textarea name="workout_notes"></textarea></div>
+                    </div>
+                    <button type="submit">Log Workout</button>
+                </form>
 
-    {% endif %}
-
-
-    <!-- SAVED CLIENTS -->
-
-    <div class="card">
-
-        <h2>
-            Saved Clients
-        </h2>
-
-        {% if clients %}
-
-            <div class="table-container">
-
+                <h3>Workout History</h3>
+                {% if workouts %}
                 <table>
-
-                    <thead>
-
-                        <tr>
-                            <th>Name</th>
-                            <th>Age</th>
-                            <th>Height</th>
-                            <th>Weight</th>
-                            <th>Program</th>
-                            <th>Calories</th>
-                        </tr>
-
-                    </thead>
-
+                    <thead><tr><th>Date</th><th>Type</th><th>Duration</th><th>Notes</th></tr></thead>
                     <tbody>
-
-                        {% for client in clients %}
-
-                            <tr>
-
-                                <td>
-                                    {{ client["name"] }}
-                                </td>
-
-                                <td>
-                                    {{ client["age"] or "-" }}
-                                </td>
-
-                                <td>
-                                    {{ client["height"] or "-" }} cm
-                                </td>
-
-                                <td>
-                                    {{ client["weight"] or "-" }} kg
-                                </td>
-
-                                <td>
-                                    {{ client["program"] }}
-                                </td>
-
-                                <td>
-                                    {{ client["calories"] or "-" }}
-                                </td>
-
-                            </tr>
-
-                        {% endfor %}
-
+                    {% for workout in workouts %}
+                        <tr>
+                            <td>{{ workout['date'] }}</td>
+                            <td>{{ workout['workout_type'] }}</td>
+                            <td>{{ workout['duration_min'] }} min</td>
+                            <td>{{ workout['notes'] }}</td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
-
                 </table>
-
+                {% else %}<div class="empty">No workouts logged yet.</div>{% endif %}
             </div>
 
-        {% else %}
+            <div class="card">
+                <h2>Body Metrics</h2>
+                <form method="post">
+                    <input type="hidden" name="action" value="metric">
+                    <input type="hidden" name="client_name" value="{{ client['name'] }}">
+                    <div class="three-col">
+                        <div><label>Date</label><input type="date" name="metric_date" value="{{ today }}"></div>
+                        <div><label>Weight (kg)</label><input type="number" step="0.1" name="metric_weight" min="0"></div>
+                        <div><label>Waist (cm)</label><input type="number" step="0.1" name="waist" min="0"></div>
+                    </div>
+                    <label>Body Fat (%)</label>
+                    <input type="number" step="0.1" name="bodyfat" min="0" max="100">
+                    <button type="submit">Save Body Metrics</button>
+                </form>
 
-            <p class="empty-message">
-                No clients have been saved yet.
-            </p>
-
-        {% endif %}
-
-    </div>
-
-
-    <!-- WEEKLY PROGRESS -->
-
-    <div class="card">
-
-        <h2>
-            Weekly Progress
-        </h2>
-
-        {% if progress %}
-
-            <div class="table-container">
-
+                {% if metrics %}
                 <table>
-
-                    <thead>
-
-                        <tr>
-                            <th>Client</th>
-                            <th>Week</th>
-                            <th>Adherence</th>
-                        </tr>
-
-                    </thead>
-
+                    <thead><tr><th>Date</th><th>Weight</th><th>Waist</th><th>Body Fat</th></tr></thead>
                     <tbody>
-
-                        {% for item in progress %}
-
-                            <tr>
-
-                                <td>
-                                    {{ item["client_name"] }}
-                                </td>
-
-                                <td>
-                                    {{ item["week"] }}
-                                </td>
-
-                                <td>
-
-                                    <div class="progress-bar">
-
-                                        <div
-                                            class="progress-fill"
-                                            data-progress="{{ item['adherence'] }}"
-                                        ></div>
-
-                                    </div>
-
-                                    {{ item["adherence"] }}%
-
-                                </td>
-
-                            </tr>
-
-                        {% endfor %}
-
+                    {% for metric in metrics %}
+                        <tr>
+                            <td>{{ metric['date'] }}</td>
+                            <td>{{ metric['weight'] }} kg</td>
+                            <td>{{ metric['waist'] }} cm</td>
+                            <td>{{ metric['bodyfat'] }}%</td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
-
                 </table>
-
+                {% else %}<div class="empty">No body metrics saved yet.</div>{% endif %}
             </div>
 
-        {% else %}
-
-            <p class="empty-message">
-                No weekly progress has been recorded yet.
-            </p>
-
-        {% endif %}
-
+            <div class="card">
+                <h2>Weekly Progress</h2>
+                {% if progress %}
+                    {% for item in progress %}
+                        <div style="margin-bottom:10px;">
+                            <div>{{ item['week'] }} — {{ item['adherence'] }}%</div>
+                            <div class="progress-track">
+                                <div class="progress-fill" data-progress="{{ item['adherence'] }}"></div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty">No weekly progress recorded yet.</div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </main>
     </div>
-
-
-    <footer>
-        ACEest Fitness & Gym &copy; 2026
-    </footer>
-
 </div>
 
-
-<!--
-    Chart data is kept outside normal JavaScript.
-    This avoids VS Code Jinja/JavaScript warnings.
--->
-
-<script
-    type="application/json"
-    id="chart-data"
->
+<script type="application/json" id="chart-data">
 {{ chart_data | tojson }}
 </script>
 
-
-<script
-    type="application/json"
-    id="weight-chart-data"
->
-{{ weight_chart_data | tojson }}
-</script>
-
-
 <script>
+(function () {
+    const chartElement = document.getElementById("chart-data");
+    const chartData = chartElement ? JSON.parse(chartElement.textContent) : {
+        weeks: [], adherence: [], metric_dates: [], metric_weights: []
+    };
 
-    /* ---------------------------------------
-       Adherence slider
-    --------------------------------------- */
-
-    function updateAdherence(value) {
-
-        const element =
-            document.getElementById("adherenceValue");
-
-        if (element) {
-
-            element.textContent =
-                value + "%";
-
-        }
-
-    }
-
-
-    /* ---------------------------------------
-       Progress bars
-    --------------------------------------- */
-
-    document
-        .querySelectorAll(".progress-fill")
-        .forEach(function (bar) {
-
-            const value =
-                Number(bar.dataset.progress);
-
-            if (!Number.isNaN(value)) {
-
-                bar.style.width =
-                    value + "%";
-
+    const adherenceCanvas = document.getElementById("adherenceChart");
+    if (adherenceCanvas) {
+        new Chart(adherenceCanvas, {
+            type: "line",
+            data: {
+                labels: chartData.weeks,
+                datasets: [{
+                    label: "Adherence %",
+                    data: chartData.adherence,
+                    tension: 0.25,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { min: 0, max: 100 } }
             }
-
         });
-
-
-    /* ---------------------------------------
-       Adherence Chart
-    --------------------------------------- */
-
-    const chartElement =
-        document.getElementById("chart-data");
-
-
-    if (chartElement) {
-
-        const chartData =
-            JSON.parse(chartElement.textContent);
-
-
-        if (
-            chartData.weeks &&
-            chartData.weeks.length > 0
-        ) {
-
-            const canvas =
-                document.getElementById("progressChart");
-
-
-            if (canvas) {
-
-                new Chart(canvas, {
-
-                    type: "line",
-
-                    data: {
-
-                        labels:
-                            chartData.weeks,
-
-                        datasets: [
-
-                            {
-                                label:
-                                    "Adherence (%)",
-
-                                data:
-                                    chartData.adherence,
-
-                                borderWidth:
-                                    3,
-
-                                pointRadius:
-                                    5,
-
-                                tension:
-                                    0.2
-                            }
-
-                        ]
-
-                    },
-
-                    options: {
-
-                        responsive:
-                            true,
-
-                        maintainAspectRatio:
-                            false,
-
-                        scales: {
-
-                            y: {
-
-                                min:
-                                    0,
-
-                                max:
-                                    100,
-
-                                title: {
-
-                                    display:
-                                        true,
-
-                                    text:
-                                        "Adherence (%)"
-
-                                }
-
-                            },
-
-                            x: {
-
-                                title: {
-
-                                    display:
-                                        true,
-
-                                    text:
-                                        "Week"
-
-                                }
-
-                            }
-
-                        },
-
-                        plugins: {
-
-                            legend: {
-
-                                display:
-                                    true
-
-                            },
-
-                            title: {
-
-                                display:
-                                    true,
-
-                                text:
-                                    "Weekly Adherence Progress"
-
-                            }
-
-                        }
-
-                    }
-
-                });
-
-            }
-
-        }
-
     }
 
-
-    /* ---------------------------------------
-       Weight Trend Chart
-    --------------------------------------- */
-
-    const weightChartElement =
-        document.getElementById(
-            "weight-chart-data"
-        );
-
-
-    if (weightChartElement) {
-
-        const weightData =
-            JSON.parse(
-                weightChartElement.textContent
-            );
-
-
-        if (
-            weightData.dates &&
-            weightData.dates.length > 0
-        ) {
-
-            const canvas =
-                document.getElementById(
-                    "weightChart"
-                );
-
-
-            if (canvas) {
-
-                new Chart(canvas, {
-
-                    type: "line",
-
-                    data: {
-
-                        labels:
-                            weightData.dates,
-
-                        datasets: [
-
-                            {
-                                label:
-                                    "Weight (kg)",
-
-                                data:
-                                    weightData.weights,
-
-                                borderWidth:
-                                    3,
-
-                                pointRadius:
-                                    5,
-
-                                tension:
-                                    0.2
-                            }
-
-                        ]
-
-                    },
-
-                    options: {
-
-                        responsive:
-                            true,
-
-                        maintainAspectRatio:
-                            false,
-
-                        scales: {
-
-                            y: {
-
-                                title: {
-
-                                    display:
-                                        true,
-
-                                    text:
-                                        "Weight (kg)"
-
-                                }
-
-                            },
-
-                            x: {
-
-                                title: {
-
-                                    display:
-                                        true,
-
-                                    text:
-                                        "Date"
-
-                                }
-
-                            }
-
-                        },
-
-                        plugins: {
-
-                            legend: {
-
-                                display:
-                                    true
-
-                            },
-
-                            title: {
-
-                                display:
-                                    true,
-
-                                text:
-                                    "Weight Trend"
-
-                            }
-
-                        }
-
-                    }
-
-                });
-
+    const weightCanvas = document.getElementById("weightChart");
+    if (weightCanvas) {
+        new Chart(weightCanvas, {
+            type: "line",
+            data: {
+                labels: chartData.metric_dates,
+                datasets: [{
+                    label: "Weight (kg)",
+                    data: chartData.metric_weights,
+                    tension: 0.25,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
             }
-
-        }
-
+        });
     }
 
+    document.querySelectorAll(".progress-fill").forEach(function (bar) {
+        const value = Number(bar.dataset.progress);
+        if (!Number.isNaN(value)) {
+            bar.style.width = Math.max(0, Math.min(100, value)) + "%";
+        }
+    });
+})();
 </script>
-
 </body>
-
 </html>

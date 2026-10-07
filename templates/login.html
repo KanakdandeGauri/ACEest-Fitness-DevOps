@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ACEest Fitness Login - v{{ app_version }}</title>
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: #111;
+            color: #eee;
+            font-family: Arial, sans-serif;
+        }
+
+        .login-card {
+            width: min(380px, 90vw);
+            background: #1b1b1b;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 28px;
+        }
+
+        h1 {
+            color: #d4af37;
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin: 12px 0 5px;
+        }
+
+        input,
+        button {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background: #292929;
+            color: white;
+        }
+
+        button {
+            margin-top: 18px;
+            background: #d4af37;
+            color: #111;
+            font-weight: bold;
+            border: 0;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #f0ca4d;
+        }
+
+        .flash {
+            background: #4a1919;
+            border: 1px solid #b94a48;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .small {
+            color: #aaa;
+            font-size: 13px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-card">
+
+        <h1>ACEest Fitness</h1>
+
+        <div>
+            Functional Fitness System · v{{ app_version }}
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <p class="flash">{{ message }}</p>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="post">
+
+            <label for="username">Username</label>
+            <input
+                type="text"
+                id="username"
+                name="username"
+                autocomplete="username"
+                required
+            >
+
+            <label for="password">Password</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                autocomplete="current-password"
+                required
+            >
+
+            <button type="submit">
+                Login
+            </button>
+
+        </form>
+
+        <div class="small">
+            Development login: admin / admin
+        </div>
+
+    </div>
+
+</body>
+</html>
