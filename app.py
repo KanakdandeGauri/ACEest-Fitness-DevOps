@@ -10,16 +10,16 @@ DB_NAME = "aceest_fitness.db"
 PROGRAMS = {
     "Fat Loss (FL)": {
         "factor": 22,
-        "description": "Structured fat-loss training with calorie-controlled nutrition.",
+        "description": "Structured fat-loss training with calorie-controlled nutrition."
     },
     "Muscle Gain (MG)": {
         "factor": 35,
-        "description": "Strength-focused training with higher calorie intake.",
+        "description": "Strength-focused training with higher calorie intake."
     },
     "Beginner (BG)": {
         "factor": 26,
-        "description": "Beginner-friendly fitness program for building consistency.",
-    },
+        "description": "Beginner-friendly fitness program for building consistency."
+    }
 }
 
 
@@ -65,8 +65,7 @@ def init_db():
 # ---------------------------------------------------------
 
 def calculate_calories(weight, program):
-    factor = PROGRAMS[program]["factor"]
-    return int(float(weight) * factor)
+    return int(float(weight) * PROGRAMS[program]["factor"])
 
 
 def get_client(name):
@@ -78,6 +77,7 @@ def get_client(name):
     ).fetchone()
 
     conn.close()
+
     return client
 
 
@@ -89,7 +89,26 @@ def get_all_clients():
     ).fetchall()
 
     conn.close()
+
     return clients
+
+
+def get_client_progress(name):
+    conn = get_db_connection()
+
+    progress = conn.execute(
+        """
+        SELECT week, adherence
+        FROM progress
+        WHERE client_name = ?
+        ORDER BY id
+        """,
+        (name,)
+    ).fetchall()
+
+    conn.close()
+
+    return progress
 
 
 def get_all_progress():
@@ -104,11 +123,12 @@ def get_all_progress():
     ).fetchall()
 
     conn.close()
+
     return progress
 
 
 # ---------------------------------------------------------
-# MAIN PAGE
+# MAIN ROUTE
 # ---------------------------------------------------------
 
 @app.route("/", methods=["GET", "POST"])
@@ -124,14 +144,18 @@ def index():
 
     selected_client = None
     summary = None
+    chart_data = {
+        "weeks": [],
+        "adherence": []
+    }
 
     if request.method == "POST":
 
         action = request.form.get("action")
 
-        # ---------------------------------------------
+        # -------------------------------------------------
         # SAVE CLIENT
-        # ---------------------------------------------
+        # -------------------------------------------------
 
         if action == "save":
 
@@ -150,16 +174,28 @@ def index():
             })
 
             if not name or not program:
-                flash("Name and Program are required.", "error")
+                flash(
+                    "Name and Program are required.",
+                    "error"
+                )
 
             elif program not in PROGRAMS:
-                flash("Please select a valid program.", "error")
+                flash(
+                    "Please select a valid program.",
+                    "error"
+                )
 
             else:
+
                 try:
+
                     age_value = int(age)
                     weight_value = float(weight)
-                    calories = calculate_calories(weight_value, program)
+
+                    calories = calculate_calories(
+                        weight_value,
+                        program
+                    )
 
                     conn = get_db_connection()
 
@@ -181,19 +217,23 @@ def index():
                     conn.commit()
                     conn.close()
 
-                    flash("Client data saved successfully.", "success")
+                    flash(
+                        "Client data saved successfully.",
+                        "success"
+                    )
 
                     selected_client = get_client(name)
 
                 except ValueError:
+
                     flash(
                         "Age must be an integer and Weight must be a number.",
                         "error"
                     )
 
-        # ---------------------------------------------
+        # -------------------------------------------------
         # LOAD CLIENT
-        # ---------------------------------------------
+        # -------------------------------------------------
 
         elif action == "load":
 
@@ -202,15 +242,25 @@ def index():
             form_data["name"] = name
 
             if not name:
-                flash("Enter a client name to load.", "error")
+
+                flash(
+                    "Enter a client name to load.",
+                    "error"
+                )
 
             else:
+
                 client = get_client(name)
 
                 if client is None:
-                    flash("Client not found.", "error")
+
+                    flash(
+                        "Client not found.",
+                        "error"
+                    )
 
                 else:
+
                     selected_client = client
 
                     form_data.update({
@@ -221,9 +271,9 @@ def index():
                         "adherence": 0
                     })
 
-        # ---------------------------------------------
+        # -------------------------------------------------
         # SAVE PROGRESS
-        # ---------------------------------------------
+        # -------------------------------------------------
 
         elif action == "progress":
 
@@ -236,19 +286,27 @@ def index():
             })
 
             if not name:
-                flash("Enter a client name before saving progress.", "error")
+
+                flash(
+                    "Enter a client name before saving progress.",
+                    "error"
+                )
 
             else:
+
                 client = get_client(name)
 
                 if client is None:
+
                     flash(
                         "Client not found. Save the client first.",
                         "error"
                     )
 
                 else:
+
                     try:
+
                         adherence_value = int(float(adherence))
 
                         if not 0 <= adherence_value <= 100:
@@ -284,14 +342,15 @@ def index():
                         selected_client = get_client(name)
 
                     except ValueError:
+
                         flash(
                             "Adherence must be between 0 and 100.",
                             "error"
                         )
 
-        # ---------------------------------------------
+        # -------------------------------------------------
         # VIEW PROGRAM
-        # ---------------------------------------------
+        # -------------------------------------------------
 
         elif action == "view":
 
@@ -310,17 +369,23 @@ def index():
             })
 
             if program not in PROGRAMS:
-                flash("Please select a program.", "error")
+
+                flash(
+                    "Please select a program.",
+                    "error"
+                )
 
             else:
+
                 try:
+
+                    calories = None
+
                     if weight:
                         calories = calculate_calories(
                             float(weight),
                             program
                         )
-                    else:
-                        calories = None
 
                     summary = {
                         "name": name,
@@ -331,15 +396,82 @@ def index():
                     }
 
                 except ValueError:
-                    flash("Weight must be a number.", "error")
 
-        # ---------------------------------------------
+                    flash(
+                        "Weight must be a number.",
+                        "error"
+                    )
+
+        # -------------------------------------------------
+        # VIEW PROGRESS CHART
+        # -------------------------------------------------
+
+        elif action == "chart":
+
+            name = request.form.get("name", "").strip()
+
+            form_data["name"] = name
+
+            if not name:
+
+                flash(
+                    "Enter a client name first.",
+                    "error"
+                )
+
+            else:
+
+                client = get_client(name)
+
+                if client is None:
+
+                    flash(
+                        "Client not found.",
+                        "error"
+                    )
+
+                else:
+
+                    selected_client = client
+
+                    progress_data = get_client_progress(name)
+
+                    if not progress_data:
+
+                        flash(
+                            "No progress data available for this client.",
+                            "error"
+                        )
+
+                    else:
+
+                        chart_data = {
+                            "weeks": [
+                                row["week"]
+                                for row in progress_data
+                            ],
+                            "adherence": [
+                                row["adherence"]
+                                for row in progress_data
+                            ]
+                        }
+
+                        form_data.update({
+                            "name": client["name"],
+                            "age": client["age"],
+                            "weight": client["weight"],
+                            "program": client["program"]
+                        })
+
+        # -------------------------------------------------
         # RESET
-        # ---------------------------------------------
+        # -------------------------------------------------
 
         elif action == "reset":
 
-            return redirect(url_for("index"))
+            return redirect(
+                url_for("index")
+            )
 
     clients = get_all_clients()
     progress = get_all_progress()
@@ -351,15 +483,17 @@ def index():
         selected_client=selected_client,
         summary=summary,
         clients=clients,
-        progress=progress
+        progress=progress,
+        chart_data=chart_data
     )
 
 
 # ---------------------------------------------------------
-# APPLICATION START
+# START APPLICATION
 # ---------------------------------------------------------
 
 if __name__ == "__main__":
+
     init_db()
 
     app.run(
