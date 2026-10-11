@@ -546,6 +546,8 @@ def report(client_name):
     )
 
 
+# Initialize the database when Flask imports the application module.
+init_db()
+
 if __name__ == "__main__":
-    init_db()
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=False)
