@@ -1,4 +1,8 @@
 venv/
+.venv/
 __pycache__/
-*.pyc
-aceest_fitness.db
+.pytest_cache/
+*.py[cod]
+*.db
+.env
+.env.*

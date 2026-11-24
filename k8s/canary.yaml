@@ -1,0 +1,23 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aceest-canary
+  namespace: aceest-fitness
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aceest-fitness
+      version: canary
+  template:
+    metadata:
+      labels:
+        app: aceest-fitness
+        version: canary
+    spec:
+      containers:
+        - name: aceest-fitness
+          image: gaurikanakdande/aceest-fitness:latest
+          ports:
+            - containerPort: 5000

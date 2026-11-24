@@ -1,0 +1,33 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aceest-variant-b
+  namespace: aceest-fitness
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aceest-variant-b
+  template:
+    metadata:
+      labels:
+        app: aceest-variant-b
+    spec:
+      containers:
+        - name: aceest-fitness
+          image: gaurikanakdande/aceest-fitness:latest
+          ports:
+            - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aceest-variant-b-service
+  namespace: aceest-fitness
+spec:
+  selector:
+    app: aceest-variant-b
+  ports:
+    - port: 5000
+      targetPort: 5000
